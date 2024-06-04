@@ -44,7 +44,7 @@ export default function Price() {
               key={item._id}
               className="border-b border-gray-200 pb-2 hover:text-primeColor hover:border-gray-400 duration-300"
             >
-              ${item.priceOne.toFixed(2)} - ${item.priceTwo.toFixed(2)}
+              ₪{item.priceOne.toFixed(2)} - ₪{item.priceTwo.toFixed(2)}
             </li>
           ))}
         </ul>

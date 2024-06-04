@@ -13,8 +13,8 @@ export default function Banner() {
   const settings = {
     dots: true,
     infinite: true,
-    autoplay: true, // هذا السطر مسؤول عن تفعيل التشغيل التلقائي
-    autoplaySpeed: 7000, // هذا السطر مسؤول عن سرعة التشغيل التلقائي بالمللي ثانية (هنا 3000 مللي ثانية = 3 ثواني)
+    autoplay: true,
+    autoplaySpeed: 7000,
     slidesToShow: 1,
     slidesToScroll: 1,
     adaptiveHeight: true,

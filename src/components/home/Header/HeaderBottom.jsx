@@ -90,7 +90,7 @@ export default function HeaderBottom() {
                         <p className="text-sm text-gray-800">
                           Price:{" "}
                           <span className="text-primeColor font-semibold">
-                            ${item.price}
+                            ₪{item.price}
                           </span>
                         </p>
                       </div>
