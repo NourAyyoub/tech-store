@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import { resetCart } from "../../redux/slice";
 import ItemCard from "./ItemCard";
 
@@ -31,7 +30,6 @@ export default function Cart() {
 
   return (
     <div className="max-w-container mx-auto px-4">
-      <Breadcrumbs title="Cart" />
       {products.length > 0 ? (
         <div className="pb-20">
           <div className="w-full h-20 bg-[#F5F7F7] text-primeColor hidden lgl:grid grid-cols-5 place-content-center px-6 text-lg font-titleFont font-semibold">

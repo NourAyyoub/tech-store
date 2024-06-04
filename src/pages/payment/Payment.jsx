@@ -1,10 +1,8 @@
 import { Link } from "react-router-dom";
-import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 
 export default function Payment() {
   return (
     <div className="max-w-container mx-auto px-4">
-      <Breadcrumbs title="Payment gateway" />
       <div className="pb-10">
         <p>Payment gateway only applicable for Production build.</p>
         <Link to="/">

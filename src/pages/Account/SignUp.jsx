@@ -1,30 +1,27 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function SignUp() {
-  // ============= Initial State Start here =============
+  // Initial State
   const [clientName, setClientName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
-  const [zip, setZip] = useState("");
 
-  // ============= Initial State End here ===============
-  // ============= Error Msg Start here =================
+  // Error Msg
   const [errClientName, setErrClientName] = useState("");
   const [errEmail, setErrEmail] = useState("");
   const [errPhone, setErrPhone] = useState("");
   const [errPassword, setErrPassword] = useState("");
   const [errAddress, setErrAddress] = useState("");
   const [errCity, setErrCity] = useState("");
-  const [errCountry, setErrCountry] = useState("");
-  const [errZip, setErrZip] = useState("");
-  // ============= Error Msg End here ===================
+
   const [successMsg, setSuccessMsg] = useState("");
-  // ============= Event Handler Start here =============
+
+  // Event Handlers
   const handleName = (e) => {
     setClientName(e.target.value);
     setErrClientName("");
@@ -49,83 +46,81 @@ export default function SignUp() {
     setCity(e.target.value);
     setErrCity("");
   };
-  const handleCountry = (e) => {
-    setCountry(e.target.value);
-    setErrCountry("");
-  };
-  const handleZip = (e) => {
-    setZip(e.target.value);
-    setErrZip("");
-  };
-  // ============= Event Handler End here ===============
-  // ================= Email Validation start here =============
+
+  // Email Validation
   const EmailValidation = (email) => {
     return String(email)
       .toLowerCase()
-      .match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i);
+      .match(/^[A-Z0-0._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i);
   };
-  // ================= Email Validation End here ===============
 
   const handleSignUp = (e) => {
     e.preventDefault();
 
+    let valid = true;
+
     if (!clientName) {
       setErrClientName("Enter your name");
+      valid = false;
     }
     if (!email) {
       setErrEmail("Enter your email");
-    } else {
-      if (!EmailValidation(email)) {
-        setErrEmail("Enter a Valid email");
-      }
+      valid = false;
+    } else if (!EmailValidation(email)) {
+      setErrEmail("Enter a Valid email");
+      valid = false;
     }
     if (!phone) {
       setErrPhone("Enter your phone number");
+      valid = false;
     }
     if (!password) {
       setErrPassword("Create a password");
-    } else {
-      if (password.length < 6) {
-        setErrPassword("Passwords must be at least 6 characters");
-      }
+      valid = false;
+    } else if (password.length < 6) {
+      setErrPassword("Passwords must be at least 6 characters");
+      valid = false;
     }
     if (!address) {
       setErrAddress("Enter your address");
+      valid = false;
     }
     if (!city) {
       setErrCity("Enter your city name");
+      valid = false;
     }
-    if (!country) {
-      setErrCountry("Enter the country you are residing");
-    }
-    if (!zip) {
-      setErrZip("Enter the zip code of your area");
-    }
-    // ============== Getting the value ==============
-    if (
-      clientName &&
-      email &&
-      EmailValidation(email) &&
-      password &&
-      password.length >= 6 &&
-      address &&
-      city &&
-      country &&
-      zip
-    ) {
-      setSuccessMsg(
-        `Hello dear ${clientName}, Welcome you to Shop Admin panel. We received your Sign up request. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${email}`
-      );
-      setClientName("");
-      setEmail("");
-      setPhone("");
-      setPassword("");
-      setAddress("");
-      setCity("");
-      setCountry("");
-      setZip("");
+
+    if (valid) {
+      axios
+        .post("http://127.0.0.1:8000/api/user/createuser", {
+          name: clientName,
+          email: email,
+          password: password,
+          phone_number: phone,
+          address: address,
+        })
+        .then((response) => {
+          if (response.data.status) {
+            setSuccessMsg(
+              `Hello ${clientName}, Welcome to the Tech Stor. We received your Sign up request. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${email}`
+            );
+            setClientName("");
+            setEmail("");
+            setPhone("");
+            setPassword("");
+            setAddress("");
+            setCity("");
+          } else {
+            setSuccessMsg("There was an error processing your request.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setSuccessMsg("There was an error processing your request.");
+        });
     }
   };
+
   return (
     <div className="w-full h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full lgl:w-[500px] h-full flex items-center justify-center">
@@ -159,7 +154,7 @@ export default function SignUp() {
                   value={clientName}
                   className="w-full h-10 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-300 outline-none focus:border-primeColor"
                   type="text"
-                  placeholder="eg. John Doe"
+                  placeholder="eg. Nour Ayyoub"
                 />
                 {errClientName && (
                   <p className="text-sm text-red-500 font-titleFont font-semibold">
@@ -171,14 +166,14 @@ export default function SignUp() {
               {/* Email */}
               <div className="flex flex-col gap-1">
                 <label className="font-titleFont text-base font-semibold text-gray-600">
-                  Work Email
+                  Email
                 </label>
                 <input
                   onChange={handleEmail}
                   value={email}
                   className="w-full h-10 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-300 outline-none focus:border-primeColor"
                   type="email"
-                  placeholder="john@workemail.com"
+                  placeholder="Nour.Ayyoub@gmail.com"
                 />
                 {errEmail && (
                   <p className="text-sm text-red-500 font-titleFont font-semibold">
@@ -197,7 +192,7 @@ export default function SignUp() {
                   value={phone}
                   className="w-full h-10 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-300 outline-none focus:border-primeColor"
                   type="text"
-                  placeholder="008801234567891"
+                  placeholder="0123456789"
                 />
                 {errPhone && (
                   <p className="text-sm text-red-500 font-titleFont font-semibold">
@@ -235,7 +230,7 @@ export default function SignUp() {
                   value={address}
                   className="w-full h-10 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-300 outline-none focus:border-primeColor"
                   type="text"
-                  placeholder="road-001, house-115, example area"
+                  placeholder="Amman St."
                 />
                 {errAddress && (
                   <p className="text-sm text-red-500 font-titleFont font-semibold">
@@ -254,50 +249,12 @@ export default function SignUp() {
                   value={city}
                   className="w-full h-10 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-300 outline-none focus:border-primeColor"
                   type="text"
-                  placeholder="Your city"
+                  placeholder="Nablus"
                 />
                 {errCity && (
                   <p className="text-sm text-red-500 font-titleFont font-semibold">
                     <span className="font-bold italic mr-1">!</span>
                     {errCity}
-                  </p>
-                )}
-              </div>
-              {/* Country */}
-              <div className="flex flex-col gap-1">
-                <label className="font-titleFont text-base font-semibold text-gray-600">
-                  Country
-                </label>
-                <input
-                  onChange={handleCountry}
-                  value={country}
-                  className="w-full h-10 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-300 outline-none focus:border-primeColor"
-                  type="text"
-                  placeholder="Your country"
-                />
-                {errCountry && (
-                  <p className="text-sm text-red-500 font-titleFont font-semibold">
-                    <span className="font-bold italic mr-1">!</span>
-                    {errCountry}
-                  </p>
-                )}
-              </div>
-              {/* Zip code */}
-              <div className="flex flex-col gap-1">
-                <label className="font-titleFont text-base font-semibold text-gray-600">
-                  Zip/Postal code
-                </label>
-                <input
-                  onChange={handleZip}
-                  value={zip}
-                  className="w-full h-10 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-300 outline-none focus:border-primeColor"
-                  type="text"
-                  placeholder="Your postal code"
-                />
-                {errZip && (
-                  <p className="text-sm text-red-500 font-titleFont font-semibold">
-                    <span className="font-bold italic mr-1">!</span>
-                    {errZip}
                   </p>
                 )}
               </div>
