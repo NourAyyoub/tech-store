@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import Slider from "react-slick";
-import { bannerImgOne } from "../../assets/images";
+import {
+  bannerImgOne,
+  bannerImgTwo,
+  bannerImgThree,
+} from "../../assets/images/index.jsx";
 
 const CustomSlide = ({ imgSrc }) => (
   <div className="flex justify-center items-center">
@@ -19,7 +23,7 @@ export default function Banner() {
     slidesToScroll: 1,
     adaptiveHeight: true,
     arrows: false,
-    beforeChange: (prev, next) => {
+    beforeChange: (next) => {
       setDocActive(next);
     },
     appendDots: (dots) => (
@@ -62,8 +66,8 @@ export default function Banner() {
 
   const slides = [
     { imgSrc: bannerImgOne },
-    { imgSrc: bannerImgOne },
-    { imgSrc: bannerImgOne },
+    { imgSrc: bannerImgTwo },
+    { imgSrc: bannerImgThree },
   ];
 
   return (

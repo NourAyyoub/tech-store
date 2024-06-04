@@ -6,7 +6,9 @@ import newArrOne from "./products/newArrival/newArrOne.webp";
 import newArrTwo from "./products/newArrival/newArrTwo.webp";
 import newArrThree from "./products/newArrival/newArrThree.webp";
 import newArrFour from "./products/newArrival/newArrFour.webp";
-import bannerImgOne from "../banner/bannerImgOne.webp";
+import bannerImgOne from "../banner/bannerImgOne.jpg";
+import bannerImgTwo from "../banner/bannerImgTwo.jpg";
+import bannerImgThree from "../banner/bannerImgThree.jpg";
 
 // Best Sellers
 import bestSellerOne from "./products/bestSeller/bestSellerOne.webp";
@@ -106,6 +108,8 @@ export {
   IMPRIMANTE_PANTUM_M6559N,
   IMPRIMANTE_PANTUM_P2509,
   bannerImgOne,
+  bannerImgTwo,
+  bannerImgThree,
 
   // imprimante Hp
   hp1,
