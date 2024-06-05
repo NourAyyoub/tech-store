@@ -6,6 +6,7 @@ import { toggleBrand } from "../../../../redux/slice";
 
 export default function Brand() {
   const [brands, setBrands] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const checkedBrands = useSelector((state) => state.Reducer.checkedBrands);
   const dispatch = useDispatch();
 
@@ -26,25 +27,41 @@ export default function Brand() {
     dispatch(toggleBrand(brand));
   };
 
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredBrands = brands.filter((brand) =>
+    brand.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="w-full p-4 bg-white rounded-lg shadow-md">
       <NavTitle title="Brand" />
 
+      <input
+        type="text"
+        placeholder="Search brands"
+        value={searchQuery}
+        onChange={handleSearch}
+        className="mb-4 p-2 border border-gray-300 rounded-lg w-full"
+      />
+
       <ul className="flex flex-col gap-4 text-sm lg:text-base text-gray-600">
-        {brands.map((item) => (
+        {filteredBrands.map((brand, index) => (
           <li
-            key={item._id}
+            key={index}
             className="border-b border-gray-200 pb-2 flex items-center gap-2 hover:text-primeColor hover:border-gray-400 duration-300"
           >
             <input
               type="checkbox"
-              id={item._id}
-              checked={checkedBrands.some((b) => b._id === item._id)}
-              onChange={() => handleToggleBrand(item)}
+              id={brand}
+              checked={checkedBrands.includes(brand)}
+              onChange={() => handleToggleBrand(brand)}
               className="cursor-pointer"
             />
-            <label htmlFor={item._id} className="cursor-pointer flex-grow">
-              {item.title}
+            <label htmlFor={brand} className="cursor-pointer flex-grow">
+              {brand}
             </label>
           </li>
         ))}
