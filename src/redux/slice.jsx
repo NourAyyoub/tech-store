@@ -21,7 +21,6 @@ export const slice = createSlice({
       } else {
         state.products.push(action.payload);
       }
-      // Dispatch a success toast
       toast.success("Product added to cart");
     },
     increaseQuantity: (state, action) => {
@@ -30,38 +29,30 @@ export const slice = createSlice({
       );
       if (item) {
         item.quantity++;
-        // Dispatch a success toast
       }
     },
     drecreaseQuantity: (state, action) => {
       const item = state.products.find(
         (item) => item._id === action.payload._id
       );
-      if (item.quantity === 1) {
-        item.quantity = 1;
-      } else {
+      if (item.quantity > 1) {
         item.quantity--;
-        // Dispatch a success toast
       }
     },
     deleteItem: (state, action) => {
       state.products = state.products.filter(
         (item) => item._id !== action.payload
       );
-      // Dispatch a success toast
       toast.error("Product removed from cart");
     },
     resetCart: (state) => {
       state.products = [];
-      // Dispatch a success toast
     },
-
     toggleBrand: (state, action) => {
       const brand = action.payload;
       const isBrandChecked = state.checkedBrands.some(
         (b) => b._id === brand._id
       );
-
       if (isBrandChecked) {
         state.checkedBrands = state.checkedBrands.filter(
           (b) => b._id !== brand._id
@@ -70,13 +61,11 @@ export const slice = createSlice({
         state.checkedBrands.push(brand);
       }
     },
-
     toggleCategory: (state, action) => {
       const category = action.payload;
       const isCategoryChecked = state.checkedCategorys.some(
         (b) => b._id === category._id
       );
-
       if (isCategoryChecked) {
         state.checkedCategorys = state.checkedCategorys.filter(
           (b) => b._id !== category._id
@@ -97,4 +86,5 @@ export const {
   toggleBrand,
   toggleCategory,
 } = slice.actions;
+
 export default slice.reducer;

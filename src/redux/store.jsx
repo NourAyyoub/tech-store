@@ -14,7 +14,7 @@ import Reducer from "./slice";
 
 const persistConfig = {
   key: "root",
-  version: 1,
+  version: 1, // Increment this version to reset the persisted state
   storage,
 };
 
