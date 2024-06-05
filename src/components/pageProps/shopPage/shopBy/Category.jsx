@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import NavTitle from "./NavTitle";
 import { ImPlus } from "react-icons/im";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,30 +7,24 @@ import { toggleCategory } from "../../../../redux/slice";
 
 export default function Category() {
   const [showSubCatOne, setShowSubCatOne] = useState(false);
-
+  const [categories, setCategories] = useState([]);
   const checkedCategorys = useSelector(
     (state) => state.Reducer.checkedCategorys
   );
   const dispatch = useDispatch();
 
-  const category = [
-    {
-      _id: 9006,
-      title: "Imprimante",
-    },
-    {
-      _id: 9007,
-      title: "Encre",
-    },
-    {
-      _id: 9008,
-      title: "Ruban",
-    },
-    {
-      _id: 9009,
-      title: "Bac de dechet",
-    },
-  ];
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/category");
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleToggleCategory = (category) => {
     dispatch(toggleCategory(category));
@@ -40,7 +35,7 @@ export default function Category() {
       <NavTitle title="Shop by Category" icons={true} />
       <div>
         <ul className="flex flex-col gap-4 text-sm lg:text-base text-gray-600">
-          {category.map((item) => (
+          {categories.map((item) => (
             <li
               key={item._id}
               className="border-b border-gray-200 pb-2 flex items-center gap-2 hover:text-primeColor hover:border-gray-400 duration-300"
