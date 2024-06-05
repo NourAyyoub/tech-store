@@ -1,4 +1,5 @@
-import { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import axios from "axios";
 import ReactPaginate from "react-paginate";
 import Product from "../../home/Products/Product";
 import { useSelector } from "react-redux";
@@ -9,8 +10,6 @@ Items.propTypes = {
   currentItems: PropTypes.array.isRequired,
 };
 
-const items = paginationItems;
-
 function Items({ currentItems }) {
   return (
     <>
@@ -18,15 +17,15 @@ function Items({ currentItems }) {
         currentItems.map((item) => (
           <div key={item._id} className="w-full">
             <Product
-              _id={item._id}
-              img={item.img}
-              productName={item.productName}
+              _id={item.id}
+              img={item.image_url}
+              productName={item.name}
               price={item.price}
-              color={item.color}
-              badge={item.badge}
-              des={item.des}
-              pdf={item.pdf}
-              ficheTech={item.ficheTech}
+              category={item.category}
+              des={item.description}
+              brand={item.manufacturer_name}
+              number_of_times_requested={item.number_of_times_requested}
+              remaining_quantity={item.remaining_quantity}
             />
           </div>
         ))
@@ -43,33 +42,46 @@ export default function Pagination() {
   const itemsPerPage = 6;
   const [itemOffset, setItemOffset] = useState(0);
   const [itemStart, setItemStart] = useState(1);
+  const [products, setProducts] = useState([]);
 
   const selectedBrands = useSelector((state) => state.Reducer.checkedBrands);
   const selectedCategories = useSelector(
     (state) => state.Reducer.checkedCategorys
   );
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/products");
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   // Filter items based on selected brands and categories
   const filteredItems = useMemo(() => {
-    return items.filter((item) => {
+    return products.filter((item) => {
       const isBrandSelected =
-        selectedBrands.length === 0 ||
-        selectedBrands.some((brand) => brand.title === item.brand);
+        selectedBrands.length === 0 || selectedBrands.includes(item.brand);
 
       const isCategorySelected =
         selectedCategories.length === 0 ||
-        selectedCategories.some((category) => category.title === item.cat);
+        selectedCategories.includes(item.cat);
 
       return isBrandSelected && isCategorySelected;
     });
-  }, [selectedBrands, selectedCategories]);
+  }, [selectedBrands, selectedCategories, products]);
 
   const endOffset = itemOffset + itemsPerPage;
   const currentItems = filteredItems.slice(itemOffset, endOffset);
   const pageCount = Math.ceil(filteredItems.length / itemsPerPage);
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % filteredItems.length;
+    const newOffset = event.selected * itemsPerPage;
     const newStart = newOffset + 1;
 
     setItemOffset(newOffset);

@@ -1,9 +1,11 @@
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slice";
 import PropTypes from "prop-types";
+
 ProductInfo.propTypes = {
   productInfo: PropTypes.object,
 };
+
 export default function ProductInfo({ productInfo }) {
   const highlightStyle = {
     color: "#d0121a", // Change this to the desired color
@@ -25,14 +27,15 @@ export default function ProductInfo({ productInfo }) {
 
     return <>{description}</>;
   };
+
   const dispatch = useDispatch();
+
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 p-4 overflow-hidden">
       <h2 className="text-4xl font-semibold">{productInfo.productName}</h2>
       <p className="text-2xl font-semibold">{productInfo.price}₪</p>
       <hr />
       <p className="text-base text-gray-600">{renderDescription()}</p>
-
       <p className="text-base text-green-600 font-medium">En Stock</p>
       <button
         onClick={() =>
