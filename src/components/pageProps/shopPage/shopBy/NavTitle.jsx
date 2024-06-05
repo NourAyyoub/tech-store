@@ -2,7 +2,7 @@ import { BiCaretDown } from "react-icons/bi";
 import PropTypes from "prop-types";
 NavTitle.propTypes = {
   title: PropTypes.string,
-  icons: PropTypes.string,
+  icons: PropTypes.bool,
 };
 export default function NavTitle({ title, icons }) {
   return (

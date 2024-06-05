@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { motion } from "framer-motion";
 import NavTitle from "./NavTitle";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,27 +7,22 @@ import { toggleBrand } from "../../../../redux/slice";
 
 export default function Brand() {
   const [showBrands, setShowBrands] = useState(true);
+  const [brands, setBrands] = useState([]);
   const checkedBrands = useSelector((state) => state.Reducer.checkedBrands);
   const dispatch = useDispatch();
 
-  const brands = [
-    {
-      _id: 900,
-      title: "Pantum",
-    },
-    {
-      _id: 901,
-      title: "Hp",
-    },
-    {
-      _id: 902,
-      title: "Epson",
-    },
-    {
-      _id: 903,
-      title: "Ricoh",
-    },
-  ];
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/brand");
+        setBrands(response.data);
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    };
+
+    fetchBrands();
+  }, []);
 
   const handleToggleBrand = (brand) => {
     dispatch(toggleBrand(brand));
@@ -38,7 +34,7 @@ export default function Brand() {
         onClick={() => setShowBrands(!showBrands)}
         className="cursor-pointer"
       >
-        <NavTitle title="Shop by Brand" icons={true} />
+        <NavTitle title="Brand" icons={true} />
       </div>
       {showBrands && (
         <motion.div

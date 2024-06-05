@@ -36,7 +36,7 @@ export default function Price() {
 
   return (
     <div className="w-full p-4 bg-white rounded-lg shadow-md">
-      <NavTitle title="Shop by Price" icons={false} />
+      <NavTitle title="Price" icons={false} />
       <div className="font-titleFont">
         <ul className="flex flex-col gap-4 text-sm lg:text-base text-gray-600">
           {priceList.map((item) => (

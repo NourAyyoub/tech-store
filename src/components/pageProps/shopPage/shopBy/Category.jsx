@@ -32,7 +32,7 @@ export default function Category() {
 
   return (
     <div className="w-full p-4 bg-white rounded-lg shadow-md">
-      <NavTitle title="Shop by Category" icons={true} />
+      <NavTitle title="Category" icons={true} />
       <div>
         <ul className="flex flex-col gap-4 text-sm lg:text-base text-gray-600">
           {categories.map((item) => (
