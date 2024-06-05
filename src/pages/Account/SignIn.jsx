@@ -1,24 +1,28 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errEmail, setErrEmail] = useState("");
   const [errPassword, setErrPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
     setErrEmail("");
+    setErrorMsg("");
   };
 
   const handlePassword = (e) => {
     setPassword(e.target.value);
     setErrPassword("");
+    setErrorMsg("");
   };
 
-  const handleSignUp = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
 
     if (!email) {
@@ -26,15 +30,41 @@ export default function SignIn() {
     }
 
     if (!password) {
-      setErrPassword("Create a password");
+      setErrPassword("Enter your password");
     }
 
     if (email && password) {
-      setSuccessMsg(
-        `Hello dear, Thank you for your attempt. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${email}`
-      );
-      setEmail("");
-      setPassword("");
+      try {
+        const response = await axios.post(
+          "http://127.0.0.1:8000/api/user/login",
+          {
+            email,
+            password,
+          },
+          {
+            headers: {
+              Accept: "application/vnd.api+json",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          setSuccessMsg(`Hello ${email}, you have successfully signed in.`);
+          setEmail("");
+          setPassword("");
+        }
+      } catch (error) {
+        if (error.response) {
+          // Server responded with a status other than 2xx
+          setErrorMsg("Invalid email or password");
+        } else if (error.request) {
+          // Request was made but no response was received
+          setErrorMsg("Network error. Please check your connection.");
+        } else {
+          // Something else happened while setting up the request
+          setErrorMsg("An error occurred. Please try again.");
+        }
+      }
     }
   };
 
@@ -54,7 +84,7 @@ export default function SignIn() {
           </div>
         ) : (
           <form
-            onSubmit={handleSignUp}
+            onSubmit={handleSignIn}
             className="w-full lgl:w-[450px] h-auto flex flex-col justify-center items-center bg-white p-8 rounded-lg shadow-md"
           >
             <h1 className="font-titleFont underline underline-offset-4 decoration-[1px] font-semibold text-3xl mdl:text-4xl mb-6">
@@ -64,14 +94,14 @@ export default function SignIn() {
               {/* Email */}
               <div className="flex flex-col gap-1">
                 <label className="font-titleFont text-base font-semibold text-gray-600">
-                  Work Email
+                  Email
                 </label>
                 <input
                   onChange={handleEmail}
                   value={email}
                   className="w-full h-10 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-300 outline-none focus:border-primeColor"
                   type="email"
-                  placeholder="john@workemail.com"
+                  placeholder="nour.ayyoub@gmail.com"
                 />
                 {errEmail && (
                   <p className="text-sm text-red-500 font-titleFont font-semibold px-4">
@@ -91,7 +121,7 @@ export default function SignIn() {
                   value={password}
                   className="w-full h-10 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-300 outline-none focus:border-primeColor"
                   type="password"
-                  placeholder="Create password"
+                  placeholder="Enter your password"
                 />
                 {errPassword && (
                   <p className="text-sm text-red-500 font-titleFont font-semibold px-4">
@@ -107,6 +137,11 @@ export default function SignIn() {
               >
                 Sign In
               </button>
+              {errorMsg && (
+                <p className="text-sm text-red-500 font-titleFont font-semibold mt-4">
+                  {errorMsg}
+                </p>
+              )}
               <p className="text-sm text-center font-titleFont font-medium">
                 Don't have an Account?{" "}
                 <Link to="/signup">
