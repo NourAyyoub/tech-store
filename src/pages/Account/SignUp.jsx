@@ -20,7 +20,6 @@ export default function SignUp() {
   const [errCity, setErrCity] = useState("");
 
   const [successMsg, setSuccessMsg] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
 
   // Event Handlers
   const handleName = (e) => {
@@ -68,7 +67,7 @@ export default function SignUp() {
       setErrEmail("Enter your email");
       valid = false;
     } else if (!EmailValidation(email)) {
-      setErrEmail("Enter a Valid email");
+      setErrEmail("Enter a valid email");
       valid = false;
     }
     if (!phone) {
@@ -78,8 +77,8 @@ export default function SignUp() {
     if (!password) {
       setErrPassword("Create a password");
       valid = false;
-    } else if (password.length < 6) {
-      setErrPassword("Passwords must be at least 6 characters");
+    } else if (password.length <8) {
+      setErrPassword("Passwords must be at least 8 characters");
       valid = false;
     }
     if (!address) {
@@ -112,30 +111,30 @@ export default function SignUp() {
             setPassword("");
             setAddress("");
             setCity("");
-            setErrorMsg("");
+            setErrClientName("");
+            setErrEmail("");
+            setErrPhone("");
+            setErrPassword("");
+            setErrAddress("");
+            setErrCity("");
           } else {
-            setErrorMsg("There was an error processing your request.");
+            setSuccessMsg("");
           }
         })
         .catch((error) => {
           if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            setErrorMsg(error.response.data.message || "An error occurred");
-          } else if (error.request) {
-            // The request was made but no response was received
-            setErrorMsg("No response from the server. Please try again later.");
+            const errors = error.response.data.errors;
+            if (errors.email) setErrEmail(errors.email[0]);
+            if (errors.phone_number) setErrPhone(errors.phone_number[0]);
           } else {
-            // Something happened in setting up the request that triggered an Error
-            setErrorMsg("An error occurred. Please try again.");
+            setSuccessMsg(""); // Clear success message if there's an error
           }
-          setSuccessMsg(""); // Clear success message if there's an error
         });
     }
   };
 
   return (
-    <div className="w-full  flex items-center justify-center bg-gray-100">
+    <div className="w-full flex items-center justify-center bg-gray-100">
       <div className="w-full lgl:w-[500px] h-auto flex items-center justify-center">
         <div className="w-full bg-white p-8 rounded-lg shadow-md">
           {successMsg && (
@@ -146,11 +145,6 @@ export default function SignUp() {
                   Sign in
                 </button>
               </Link>
-            </div>
-          )}
-          {errorMsg && (
-            <div className="mb-4 p-4 bg-red-100 text-red-700 border border-red-500 rounded">
-              <p className="font-medium font-titleFont">{errorMsg}</p>
             </div>
           )}
           {!successMsg && (
