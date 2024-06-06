@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import InputField from "./InputField";
+import InputField from "../InputField";
 
 export default function AddProductForm() {
   const [product, setProduct] = useState({
