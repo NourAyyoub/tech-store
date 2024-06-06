@@ -16,6 +16,7 @@ import Home from "./pages/Home/Home";
 import Payment from "./pages/payment/Payment";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Shop from "./pages/Shop/Shop";
+import Admin from "./pages/Admin/Admin";
 import "react-toastify/dist/ReactToastify.css";
 
 function Layout() {
@@ -35,6 +36,7 @@ const router = createBrowserRouter(
         {/* ==================== Header Navlink Start here =================== */}
         <Route index element={<Home />}></Route>
         <Route path="/shop" element={<Shop />}></Route>
+        <Route path="/admin" element={<Admin />}></Route>
         <Route path="/about" element={<About />}></Route>
         {/* ==================== Header Navlink End here ===================== */}
         <Route path="/product/:_id" element={<ProductDetails />}></Route>
