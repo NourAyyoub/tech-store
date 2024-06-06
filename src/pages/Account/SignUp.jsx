@@ -99,6 +99,7 @@ export default function SignUp() {
           password: password,
           phone_number: phone,
           address: address,
+          city: city,
         })
         .then((response) => {
           if (response.data.status) {
