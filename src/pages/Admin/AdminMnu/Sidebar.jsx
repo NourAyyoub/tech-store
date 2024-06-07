@@ -6,6 +6,12 @@ export default function Sidebar({ onShowForm }) {
           Admin Menu
         </h2>
         <button
+          onClick={() => onShowForm("viewOrders")}
+          className="p-4 hover:bg-gray-100 border-b border-gray-200 text-left"
+        >
+          View Orders
+        </button>
+        <button
           onClick={() => onShowForm("addProduct")}
           className="p-4 hover:bg-gray-100 border-b border-gray-200 text-left"
         >
