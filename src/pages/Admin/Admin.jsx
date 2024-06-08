@@ -15,14 +15,14 @@ export default function Admin() {
 
   return (
     <div className="flex">
-      <Sidebar onShowForm={handleShowForm} />
+      <Sidebar currentForm={currentForm} onShowForm={handleShowForm} />
       <div className="flex-1 p-4">
         <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
         {currentForm === "viewOrders" && <OrdersList />}
         {currentForm === "addProduct" && <AddProductForm />}
         {currentForm === "deleteUser" && <DeleteUserForm />}
         {currentForm === "editProduct" && <EditProductForm />}
-        {currentForm === "deleteProduct" && <DeleteProductForm />}{" "}
+        {currentForm === "deleteProduct" && <DeleteProductForm />}
       </div>
     </div>
   );
