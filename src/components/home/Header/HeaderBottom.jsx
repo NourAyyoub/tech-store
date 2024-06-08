@@ -127,6 +127,9 @@ export default function HeaderBottom() {
                 <li className="text-gray-600 px-4 py-2 border-b-[1px] border-gray-300 hover:bg-gray-100 duration-300 cursor-pointer rounded-b-lg">
                   Profile
                 </li>
+                <li className="text-red-600 px-4 py-2 border-b-[1px] border-gray-300 hover:bg-gray-100 duration-300 cursor-pointer rounded-b-lg">
+                  Logout
+                </li>
               </motion.ul>
             )}
             <Link to="/cart">

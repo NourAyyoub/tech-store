@@ -2,6 +2,7 @@ import { useState } from "react";
 import Sidebar from "./AdminMnu/Sidebar";
 import AddProductForm from "./AdminMnu/AddProductForm";
 import DeleteUserForm from "./AdminMnu/DeleteUserForm";
+import EditProductForm from "./AdminMnu/EditProductForm";
 import OrdersList from "./AdminMnu/OrdersList";
 
 export default function Admin() {
@@ -19,6 +20,7 @@ export default function Admin() {
         {currentForm === "viewOrders" && <OrdersList />}
         {currentForm === "addProduct" && <AddProductForm />}
         {currentForm === "deleteUser" && <DeleteUserForm />}
+        {currentForm === "editProduct" && <EditProductForm />}
       </div>
     </div>
   );
