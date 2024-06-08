@@ -29,6 +29,12 @@ export default function Sidebar({ onShowForm }) {
         >
           Edit Product
         </button>
+        <button
+          onClick={() => onShowForm("deleteProduct")}
+          className="p-4 hover:bg-gray-100 border-b border-gray-200 text-left"
+        >
+          Delete Product
+        </button>
       </div>
     </div>
   );

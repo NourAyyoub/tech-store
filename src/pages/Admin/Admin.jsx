@@ -4,6 +4,7 @@ import AddProductForm from "./AdminMnu/AddProductForm";
 import DeleteUserForm from "./AdminMnu/DeleteUserForm";
 import EditProductForm from "./AdminMnu/EditProductForm";
 import OrdersList from "./AdminMnu/OrdersList";
+import DeleteProductForm from "./AdminMnu/DeleteProductForm";
 
 export default function Admin() {
   const [currentForm, setCurrentForm] = useState("viewOrders");
@@ -21,6 +22,7 @@ export default function Admin() {
         {currentForm === "addProduct" && <AddProductForm />}
         {currentForm === "deleteUser" && <DeleteUserForm />}
         {currentForm === "editProduct" && <EditProductForm />}
+        {currentForm === "deleteProduct" && <DeleteProductForm />}{" "}
       </div>
     </div>
   );
