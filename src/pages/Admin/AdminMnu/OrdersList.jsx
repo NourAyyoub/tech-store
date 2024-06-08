@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import OrderDetails from "./OrderDetails";
 
@@ -122,13 +122,7 @@ export default function OrdersList() {
       )}
       {selectedOrderId && (
         <div className="mb-6">
-          <OrderDetails orderId={selectedOrderId} />
-          <button
-            className="bg-gray-500 text-white py-2 px-4 rounded"
-            onClick={() => setSelectedOrderId(null)}
-          >
-            Close Details
-          </button>
+          <OrderDetails orderId={selectedOrderId} onClose={() => setSelectedOrderId(null)} />
         </div>
       )}
 
@@ -153,7 +147,7 @@ export default function OrdersList() {
               onChange={(e) => setSortBy(e.target.value)}
               className="bg-gray-500 text-white px-4 py-2 rounded ml-2"
             >
-              <option value="">Sort By</option>
+              <option value="">Sort By ID</option>
               <option value="status">Sort by Status</option>
               <option value="date">Sort by Date</option>
             </select>
@@ -240,3 +234,4 @@ export default function OrdersList() {
     </div>
   );
 }
+
