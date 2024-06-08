@@ -4,7 +4,6 @@ import InputField from "../InputField";
 
 export default function AddProductForm() {
   const [product, setProduct] = useState({
-    id: "",
     name: "",
     price: "",
     category: "",
@@ -35,10 +34,10 @@ export default function AddProductForm() {
     for (const key in product) {
       formData.append(key, product[key]);
     }
-
+  
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/products",
+        "http://127.0.0.1:8000/api/product/create", // Updated API endpoint
         formData,
         {
           headers: {
@@ -46,14 +45,23 @@ export default function AddProductForm() {
           },
         }
       );
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert("Product added successfully");
+        setProduct({
+          name: "",
+          price: "",
+          category: "",
+          description: "",
+          image: null,
+          manufacturer_name: "",
+          remaining_quantity: "",
+        });
       } else {
-        alert("Error adding product");
+        alert("Error adding product: " + response.data.message);
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Error adding product");
+      alert("Error adding product: " + error.message);
     }
   };
 
@@ -64,13 +72,6 @@ export default function AddProductForm() {
         className="w-full max-w-lg bg-white p-8 rounded shadow-md"
       >
         <h1 className="text-2xl font-bold mb-4">Add new product</h1>
-        <InputField
-          label="ID"
-          type="text"
-          name="id"
-          value={product.id}
-          onChange={handleChange}
-        />
         <InputField
           label="Name"
           type="text"
