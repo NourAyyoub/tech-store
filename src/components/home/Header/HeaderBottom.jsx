@@ -14,7 +14,6 @@ export default function HeaderBottom() {
   const navigate = useNavigate();
   const ref = useRef();
   const token = localStorage.getItem("token");
-  const username = localStorage.getItem("username");
   const [isLoggedIn, setIsLoggedIn] = useState(!!token);
 
   useEffect(() => {
@@ -29,7 +28,6 @@ export default function HeaderBottom() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("username");
     setIsLoggedIn(false);
     navigate("/signin");
   };
@@ -116,7 +114,6 @@ export default function HeaderBottom() {
               className="flex items-center gap-2 text-gray-600 hover:text-primeColor transition-colors duration-300"
             >
               <FaUser className="w-5 h-5" />
-              {isLoggedIn && <span>{username}</span>}
               <FaCaretDown className="w-3 h-3" />
             </div>
             {showUser && (
@@ -141,9 +138,11 @@ export default function HeaderBottom() {
                   </>
                 ) : (
                   <>
-                    <li className="text-gray-600 px-4 py-2 border-b-[1px] border-gray-300 hover:bg-gray-100 duration-300 cursor-pointer rounded-b-lg">
-                      Profile
-                    </li>
+                    <Link to="/profile">
+                      <li className="text-gray-600 px-4 py-2 border-b-[1px] border-gray-300 hover:bg-gray-100 duration-300 cursor-pointer rounded-t-lg">
+                        Profile
+                      </li>
+                    </Link>
                     <li
                       onClick={handleLogout}
                       className="text-red-600 px-4 py-2 border-b-[1px] border-gray-300 hover:bg-gray-100 duration-300 cursor-pointer rounded-b-lg"
