@@ -28,6 +28,9 @@ export default function Product(props) {
   const navigate = useNavigate();
   const productItem = props;
 
+  const token = localStorage.getItem("token");
+  const isLoggedIn = !!token;
+
   const handleProductDetails = () => {
     navigate(`/product/${rootId}`, {
       state: {
@@ -37,9 +40,33 @@ export default function Product(props) {
   };
 
   const handleWishList = () => {
+    if (!isLoggedIn) {
+      toast.error("Please log in to add items to your wishlist");
+      navigate("/signin");
+      return;
+    }
     toast.success("Product added to wish List");
     setWishList([...wishList, props]);
     console.log(wishList);
+  };
+
+  const handleAddToCart = () => {
+    if (!isLoggedIn) {
+      toast.error("Please log in to add items to your cart");
+      navigate("/signin");
+      return;
+    }
+    dispatch(
+      addToCart({
+        _id: props._id,
+        name: props.productName,
+        quantity: 1,
+        image: props.img,
+        badge: props.badge,
+        price: props.price,
+      })
+    );
+    toast.success("Product added to cart");
   };
 
   return (
@@ -50,18 +77,7 @@ export default function Product(props) {
         </div>
         <div className="w-full h-32 absolute bg-white -bottom-[130px] group-hover:bottom-0 duration-700 p-2 rounded-b-lg flex flex-col items-end justify-center">
           <button
-            onClick={() =>
-              dispatch(
-                addToCart({
-                  _id: props._id,
-                  name: props.productName,
-                  quantity: 1,
-                  image: props.img,
-                  badge: props.badge,
-                  price: props.price,
-                })
-              )
-            }
+            onClick={handleAddToCart}
             className="w-full flex items-center justify-between px-4 py-2 mb-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 duration-300"
           >
             Add to Cart
