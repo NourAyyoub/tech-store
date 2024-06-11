@@ -1,9 +1,8 @@
 import React, { useState, useMemo, useEffect } from "react";
-import axios from "axios";
 import ReactPaginate from "react-paginate";
-import Product from "../../home/Products/Product";
 import { useSelector } from "react-redux";
-import { paginationItems } from "../../../constants";
+import Product from "../../home/Products/Product";
+import { fetchProducts } from "../../../assets/Api/fetchProducts";
 import PropTypes from "prop-types";
 
 Items.propTypes = {
@@ -43,6 +42,7 @@ export default function Pagination() {
   const [itemOffset, setItemOffset] = useState(0);
   const [itemStart, setItemStart] = useState(1);
   const [products, setProducts] = useState([]);
+  const [error, setError] = useState(null);
 
   const selectedBrands = useSelector((state) => state.Reducer.checkedBrands);
   const selectedCategories = useSelector(
@@ -50,27 +50,29 @@ export default function Pagination() {
   );
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const getProducts = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/products");
-        setProducts(response.data);
+        const productsData = await fetchProducts();
+        setProducts(productsData);
       } catch (error) {
         console.error("Error fetching products:", error);
+        setError("Failed to fetch products.");
       }
     };
 
-    fetchProducts();
+    getProducts();
   }, []);
 
   // Filter items based on selected brands and categories
   const filteredItems = useMemo(() => {
     return products.filter((item) => {
       const isBrandSelected =
-        selectedBrands.length === 0 || selectedBrands.includes(item.brand);
+        selectedBrands.length === 0 ||
+        selectedBrands.includes(item.manufacturer_name);
 
       const isCategorySelected =
         selectedCategories.length === 0 ||
-        selectedCategories.includes(item.cat);
+        selectedCategories.includes(item.category);
 
       return isBrandSelected && isCategorySelected;
     });
@@ -96,6 +98,7 @@ export default function Pagination() {
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 mdl:gap-4 lg:gap-10">
+        {error && <div className="text-red-500">{error}</div>}
         <Items currentItems={currentItems} />
       </div>
       <div className="flex flex-col mdl:flex-row justify-center mdl:justify-between items-center py-10">
