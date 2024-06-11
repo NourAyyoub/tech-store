@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function Sidebar({ currentForm, onShowForm }) {
   const menuItems = [
     { name: "viewOrders", label: "View Orders" },
@@ -5,6 +7,7 @@ export default function Sidebar({ currentForm, onShowForm }) {
     { name: "deleteUser", label: "Delete User" },
     { name: "editProduct", label: "Edit Product" },
     { name: "deleteProduct", label: "Delete Product" },
+    { name: "viewUsers", label: "View Users" }, // إضافة الزر الجديد
   ];
 
   return (
