@@ -13,6 +13,10 @@ export default function HeaderBottom() {
   const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
   const ref = useRef();
+  const token = localStorage.getItem("token");
+  const username = localStorage.getItem("username");
+  const [isLoggedIn, setIsLoggedIn] = useState(!!token);
+
   useEffect(() => {
     document.body.addEventListener("click", (e) => {
       if (ref.current.contains(e.target)) {
@@ -22,6 +26,13 @@ export default function HeaderBottom() {
       }
     });
   }, [show, ref]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    setIsLoggedIn(false);
+    navigate("/signin");
+  };
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -105,6 +116,7 @@ export default function HeaderBottom() {
               className="flex items-center gap-2 text-gray-600 hover:text-primeColor transition-colors duration-300"
             >
               <FaUser className="w-5 h-5" />
+              {isLoggedIn && <span>{username}</span>}
               <FaCaretDown className="w-3 h-3" />
             </div>
             {showUser && (
@@ -114,22 +126,32 @@ export default function HeaderBottom() {
                 transition={{ duration: 0.5 }}
                 className="absolute top-8 left-0 z-50 bg-[#F5F5F3] w-44 text-[#767676] h-auto p-4 pb-6 rounded-lg shadow-lg"
               >
-                <Link to="/signin">
-                  <li className="text-gray-600 px-4 py-2 border-b-[1px] border-gray-300 hover:bg-gray-100 duration-300 cursor-pointer rounded-t-lg">
-                    Login
-                  </li>
-                </Link>
-                <Link onClick={() => setShowUser(false)} to="/signup">
-                  <li className="text-gray-600 px-4 py-2 border-b-[1px] border-gray-300 hover:bg-gray-100 duration-300 cursor-pointer">
-                    Sign Up
-                  </li>
-                </Link>
-                <li className="text-gray-600 px-4 py-2 border-b-[1px] border-gray-300 hover:bg-gray-100 duration-300 cursor-pointer rounded-b-lg">
-                  Profile
-                </li>
-                <li className="text-red-600 px-4 py-2 border-b-[1px] border-gray-300 hover:bg-gray-100 duration-300 cursor-pointer rounded-b-lg">
-                  Logout
-                </li>
+                {!isLoggedIn ? (
+                  <>
+                    <Link to="/signin">
+                      <li className="text-gray-600 px-4 py-2 border-b-[1px] border-gray-300 hover:bg-gray-100 duration-300 cursor-pointer rounded-t-lg">
+                        Login
+                      </li>
+                    </Link>
+                    <Link onClick={() => setShowUser(false)} to="/signup">
+                      <li className="text-gray-600 px-4 py-2 border-b-[1px] border-gray-300 hover:bg-gray-100 duration-300 cursor-pointer">
+                        Sign Up
+                      </li>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <li className="text-gray-600 px-4 py-2 border-b-[1px] border-gray-300 hover:bg-gray-100 duration-300 cursor-pointer rounded-b-lg">
+                      Profile
+                    </li>
+                    <li
+                      onClick={handleLogout}
+                      className="text-red-600 px-4 py-2 border-b-[1px] border-gray-300 hover:bg-gray-100 duration-300 cursor-pointer rounded-b-lg"
+                    >
+                      Logout
+                    </li>
+                  </>
+                )}
               </motion.ul>
             )}
             <Link to="/cart">

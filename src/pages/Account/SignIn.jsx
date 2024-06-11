@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function SignIn() {
@@ -9,6 +9,7 @@ export default function SignIn() {
   const [errPassword, setErrPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const navigate = useNavigate();
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
@@ -49,19 +50,20 @@ export default function SignIn() {
         );
 
         if (response.status === 200) {
+          localStorage.setItem("token", response.data.token);
           setSuccessMsg(`Hello ${email}, you have successfully signed in.`);
           setEmail("");
           setPassword("");
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
         }
       } catch (error) {
         if (error.response) {
-          // Server responded with a status other than 2xx
           setErrorMsg("Invalid email or password");
         } else if (error.request) {
-          // Request was made but no response was received
           setErrorMsg("Network error. Please check your connection.");
         } else {
-          // Something else happened while setting up the request
           setErrorMsg("An error occurred. Please try again.");
         }
       }
@@ -76,9 +78,9 @@ export default function SignIn() {
             <p className="w-full text-center text-green-500 font-medium font-titleFont mb-4">
               {successMsg}
             </p>
-            <Link to="/signup">
+            <Link to="/">
               <button className="w-full h-10 bg-primeColor text-gray-200 rounded-md text-base font-titleFont font-semibold tracking-wide hover:bg-black hover:text-white duration-300">
-                Sign Up
+                Go to Home
               </button>
             </Link>
           </div>
@@ -91,7 +93,6 @@ export default function SignIn() {
               Sign in
             </h1>
             <div className="flex flex-col gap-4 w-full">
-              {/* Email */}
               <div className="flex flex-col gap-1">
                 <label className="font-titleFont text-base font-semibold text-gray-600">
                   Email
@@ -111,7 +112,6 @@ export default function SignIn() {
                 )}
               </div>
 
-              {/* Password */}
               <div className="flex flex-col gap-1">
                 <label className="font-titleFont text-base font-semibold text-gray-600">
                   Password

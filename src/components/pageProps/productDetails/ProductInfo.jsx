@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slice";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
 ProductInfo.propTypes = {
   productInfo: PropTypes.object,
@@ -29,6 +30,27 @@ export default function ProductInfo({ productInfo }) {
   };
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleAddToCart = () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/signin");
+      return;
+    }
+
+    dispatch(
+      addToCart({
+        _id: productInfo.id,
+        name: productInfo.productName,
+        quantity: 1,
+        image: productInfo.img,
+        badge: productInfo.badge,
+        price: productInfo.price,
+      })
+    );
+  };
 
   return (
     <div className="flex flex-col gap-5 p-4 overflow-hidden">
@@ -38,18 +60,7 @@ export default function ProductInfo({ productInfo }) {
       <p className="text-base text-gray-600">{renderDescription()}</p>
       <p className="text-base text-green-600 font-medium">En Stock</p>
       <button
-        onClick={() =>
-          dispatch(
-            addToCart({
-              _id: productInfo.id,
-              name: productInfo.productName,
-              quantity: 1,
-              image: productInfo.img,
-              badge: productInfo.badge,
-              price: productInfo.price,
-            })
-          )
-        }
+        onClick={handleAddToCart}
         className="w-full py-4 bg-blue-500 hover:bg-blue-600 duration-300 text-white text-lg font-titleFont"
       >
         Add to Cart
