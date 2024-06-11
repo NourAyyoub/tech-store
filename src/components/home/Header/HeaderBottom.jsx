@@ -4,17 +4,33 @@ import { FaSearch, FaUser, FaCaretDown, FaShoppingCart } from "react-icons/fa";
 import Flex from "../../designLayouts/Flex";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { paginationItems } from "../../../constants";
+import { fetchProducts } from "../../../assets/Api/fetchProducts"; // Make sure the path is correct
 import { BsSuitHeartFill } from "react-icons/bs";
 
 export default function HeaderBottom() {
-  const products = useSelector((state) => state.Reducer.products);
+  const productsInCart = useSelector((state) => state.Reducer.products);
   const [show, setShow] = useState(false);
   const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
   const ref = useRef();
   const token = localStorage.getItem("token");
   const [isLoggedIn, setIsLoggedIn] = useState(!!token);
+  const [products, setProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchAllProducts = async () => {
+      try {
+        const allProducts = await fetchProducts();
+        setProducts(allProducts);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchAllProducts();
+  }, []);
 
   useEffect(() => {
     document.body.addEventListener("click", (e) => {
@@ -32,19 +48,16 @@ export default function HeaderBottom() {
     navigate("/signin");
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState([]);
-
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
 
   useEffect(() => {
-    const filtered = paginationItems.filter((item) =>
-      item.productName.toLowerCase().includes(searchQuery.toLowerCase())
+    const filtered = products.filter((item) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredProducts(filtered);
-  }, [searchQuery]);
+  }, [searchQuery, products]);
 
   return (
     <div className="w-full bg-[#ffffff] relative">
@@ -63,48 +76,44 @@ export default function HeaderBottom() {
               <div
                 className={`w-full mx-auto h-96 bg-white top-16 absolute left-0 z-50 overflow-y-scroll shadow-2xl scrollbar-hide cursor-pointer rounded-lg mt-2`}
               >
-                {searchQuery &&
-                  filteredProducts.map((item) => (
-                    <div
-                      onClick={() =>
-                        navigate(
-                          `/product/${item.productName
-                            .toLowerCase()
-                            .split(" ")
-                            .join("")}`,
-                          {
-                            state: {
-                              item: item,
-                            },
-                          }
-                        ) & setSearchQuery("")
-                      }
-                      key={item._id}
-                      className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-3 p-4 rounded-lg hover:bg-gray-200 transition-colors"
-                    >
-                      <img
-                        className="w-24 rounded-lg"
-                        src={item.img}
-                        alt="productImg"
-                      />
-                      <div className="flex flex-col gap-1">
-                        <p className="font-semibold text-lg text-gray-800">
-                          {item.productName}
-                        </p>
-                        <p className="text-xs text-gray-600">
-                          {item.des.length > 100
-                            ? `${item.des.slice(0, 100)}...`
-                            : item.des}
-                        </p>
-                        <p className="text-sm text-gray-800">
-                          Price:{" "}
-                          <span className="text-primeColor font-semibold">
-                            ₪{item.price}
-                          </span>
-                        </p>
-                      </div>
+                {filteredProducts.map((item) => (
+                  <div
+                    onClick={() =>
+                      navigate(
+                        `/product/${item.name.toLowerCase().split(" ").join("")}`,
+                        {
+                          state: {
+                            item: item,
+                          },
+                        }
+                      ) & setSearchQuery("")
+                    }
+                    key={item.id}
+                    className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-3 p-4 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    <img
+                      className="w-24 rounded-lg"
+                      src={item.image_url}
+                      alt="productImg"
+                    />
+                    <div className="flex flex-col gap-1">
+                      <p className="font-semibold text-lg text-gray-800">
+                        {item.name}
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        {item.description.length > 100
+                          ? `${item.description.slice(0, 100)}...`
+                          : item.description}
+                      </p>
+                      <p className="text-sm text-gray-800">
+                        Price:{" "}
+                        <span className="text-primeColor font-semibold">
+                          ₪{item.price}
+                        </span>
+                      </p>
                     </div>
-                  ))}
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -157,7 +166,7 @@ export default function HeaderBottom() {
               <div className="relative">
                 <FaShoppingCart className="w-5 h-5 text-gray-600 hover:text-primeColor transition-colors duration-300" />
                 <span className="absolute font-titleFont top-0 right-0 transform translate-x-1/2 -translate-y-1/2 text-xs w-4 h-4 flex items-center justify-center rounded-full bg-primeColor text-white">
-                  {products.length > 0 ? products.length : 0}
+                {productsInCart.length > 0 ? productsInCart.length : 0}
                 </span>
               </div>
             </Link>
