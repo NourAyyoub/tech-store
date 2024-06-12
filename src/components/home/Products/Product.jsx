@@ -4,8 +4,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { MdOutlineLabelImportant } from "react-icons/md";
 import Image from "../../designLayouts/Image";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../../../redux/slice";
+import axios from "axios";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
 
@@ -18,21 +17,16 @@ Product.propTypes = {
 };
 
 export default function Product(props) {
-  const dispatch = useDispatch();
-  const _id = props.productName;
-  const idString = (_id) => {
-    return String(_id).toLowerCase().split(" ").join("");
-  };
-  const rootId = idString(_id);
   const [wishList, setWishList] = useState([]);
   const navigate = useNavigate();
   const productItem = props;
 
   const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
   const isLoggedIn = !!token;
 
   const handleProductDetails = () => {
-    navigate(`/product/${rootId}`, {
+    navigate(`/product/${productItem._id}`, {
       state: {
         item: productItem,
       },
@@ -50,23 +44,52 @@ export default function Product(props) {
     console.log(wishList);
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!isLoggedIn) {
       toast.error("Please log in to add items to your cart");
       navigate("/signin");
       return;
     }
-    dispatch(
-      addToCart({
-        _id: props._id,
-        name: props.productName,
-        quantity: 1,
-        image: props.img,
-        badge: props.badge,
-        price: props.price,
-      })
-    );
-    toast.success("Product added to cart");
+
+    try {
+      // Step 1: Create Order to get order_id
+      const createOrderResponse = await axios.post(
+        "http://127.0.0.1:8000/api/order/create",
+        {
+          delivery_address: "nablus",
+          customer_id: user.id, // Use the user ID from localStorage
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.api+json",
+          },
+        }
+      );
+
+      const orderId = createOrderResponse.data.user[0].id;
+
+      // Step 2: Add product to the created order
+      await axios.post(
+        "http://127.0.0.1:8000/api/orderdetails/create",
+        {
+          order_id: orderId,
+          product_id: productItem._id,
+          quantity: 1,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.api+json",
+          },
+        }
+      );
+
+      toast.success("Product added to cart");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Failed to add product to cart.");
+    }
   };
 
   return (

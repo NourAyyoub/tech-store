@@ -35,6 +35,7 @@ export default function ProductInfo({ productInfo }) {
 
   const handleAddToCart = async () => {
     const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
 
     if (!token) {
       navigate("/signin");
@@ -50,7 +51,7 @@ export default function ProductInfo({ productInfo }) {
         "http://127.0.0.1:8000/api/order/create",
         {
           delivery_address: "nablus",
-          customer_id: 1, // Replace with actual customer ID
+          customer_id: user.id, // Use the user ID from localStorage
         },
         {
           headers: {
