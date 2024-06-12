@@ -7,11 +7,14 @@ import { logo } from "../../../assets/images";
 import Image from "../../designLayouts/Image";
 import { navBarList } from "../../../constants";
 import Flex from "../../designLayouts/Flex";
+import axios from "axios";
 
 export default function Header() {
   const [showMenu, setShowMenu] = useState(true);
   const [sidenav, setSidenav] = useState(false);
   const location = useLocation();
+  const token = localStorage.getItem("token");
+  const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
     const ResponsiveMenu = () => {
@@ -24,6 +27,33 @@ export default function Header() {
     ResponsiveMenu();
     window.addEventListener("resize", ResponsiveMenu);
   }, []);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (token) {
+        try {
+          const response = await axios.get(
+            "http://127.0.0.1:8000/api/user/profile",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/vnd.api+json",
+              },
+            }
+          );
+          setUserRole(response.data.status);
+        } catch (error) {
+          console.error("Error fetching user role:", error);
+        }
+      }
+    };
+
+    fetchUserRole();
+  }, [token]);
+
+  const filteredNavBarList = navBarList.filter(
+    (item) => item.title !== "Admin" || userRole === "responsible"
+  );
 
   return (
     <div className="w-full h-20 bg-[#F5F5F3] sticky top-0 z-50 border-b border-gray-200 shadow-md">
@@ -42,7 +72,7 @@ export default function Header() {
                 transition={{ duration: 0.5 }}
                 className="flex items-center gap-4"
               >
-                {navBarList.map(({ _id, title, link }) => (
+                {filteredNavBarList.map(({ _id, title, link }) => (
                   <NavLink
                     key={_id}
                     className="flex font-normal hover:font-bold justify-center items-center px-4 py-2 text-base text-[#767676] hover:text-[#262626] hover:underline underline-offset-4 decoration-1 transition-colors duration-300"
@@ -76,7 +106,7 @@ export default function Header() {
                     </span>
                   </div>
                   <ul className="text-gray-200 flex flex-col gap-4">
-                    {navBarList.map((item) => (
+                    {filteredNavBarList.map((item) => (
                       <li
                         key={item._id}
                         className="font-normal hover:font-bold text-lg hover:text-white hover:underline underline-offset-4 decoration-1 transition-colors duration-300"
