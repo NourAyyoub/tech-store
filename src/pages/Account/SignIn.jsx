@@ -77,9 +77,9 @@ export default function SignIn() {
             <p className="w-full text-center text-green-500 font-medium font-titleFont mb-4">
               {successMsg}
             </p>
-            <Link to="/signup">
+            <Link to="/">
               <button className="w-full h-10 bg-primeColor text-gray-200 rounded-md text-base font-titleFont font-semibold tracking-wide hover:bg-black hover:text-white duration-300">
-                Sign Up
+                go to home
               </button>
             </Link>
           </div>
