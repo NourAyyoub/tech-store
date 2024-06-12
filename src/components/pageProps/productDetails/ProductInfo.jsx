@@ -12,6 +12,7 @@ export default function ProductInfo({ productInfo }) {
     color: "#d0121a",
     fontWeight: "bold",
   };
+  console.log("Product Info:", productInfo);
 
   const renderDescription = () => {
     if (!productInfo.des) {
@@ -50,8 +51,9 @@ export default function ProductInfo({ productInfo }) {
       const createOrderResponse = await axios.post(
         "http://127.0.0.1:8000/api/order/create",
         {
-          delivery_address: "nablus",
-          customer_id: user.id, // Use the user ID from localStorage
+          // delivery_address: "nablus",
+          // customer_id: user.id, // Use the user ID from localStorage
+          
         },
         {
           headers: {
@@ -61,14 +63,14 @@ export default function ProductInfo({ productInfo }) {
         }
       );
 
-      const orderId = createOrderResponse.data.user[0].id;
+      const orderId = createOrderResponse.data.order_id;
 
       // Step 2: Add product to the created order
       await axios.post(
         "http://127.0.0.1:8000/api/orderdetails/create",
         {
           order_id: orderId,
-          product_id: productInfo.id,
+          product_id: productInfo._id,
           quantity: 1,
         },
         {
