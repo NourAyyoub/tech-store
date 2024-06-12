@@ -16,10 +16,10 @@ Product.propTypes = {
   price: PropTypes.string.isRequired,
 };
 
-export default function Product(props) {
+export default function Product(productInfo) {
   const [wishList, setWishList] = useState([]);
   const navigate = useNavigate();
-  const productItem = props;
+  const productItem = productInfo;
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
@@ -40,7 +40,7 @@ export default function Product(props) {
       return;
     }
     toast.success("Product added to wish List");
-    setWishList([...wishList, props]);
+    setWishList([...wishList, productInfo]);
     console.log(wishList);
   };
 
@@ -56,8 +56,9 @@ export default function Product(props) {
       const createOrderResponse = await axios.post(
         "http://127.0.0.1:8000/api/order/create",
         {
-          delivery_address: "nablus",
-          customer_id: user.id, // Use the user ID from localStorage
+          // delivery_address: "nablus",
+          // customer_id: user.id, // Use the user ID from localStorage
+          
         },
         {
           headers: {
@@ -67,14 +68,14 @@ export default function Product(props) {
         }
       );
 
-      const orderId = createOrderResponse.data.user[0].id;
+      const orderId = createOrderResponse.data.order_id;
 
       // Step 2: Add product to the created order
       await axios.post(
         "http://127.0.0.1:8000/api/orderdetails/create",
         {
           order_id: orderId,
-          product_id: productItem._id,
+          product_id: productInfo._id,
           quantity: 1,
         },
         {
@@ -96,7 +97,7 @@ export default function Product(props) {
     <div className="w-full relative group shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden">
       <div className="max-w-80 max-h-80 relative overflow-hidden rounded-lg">
         <div onClick={handleProductDetails} className="cursor-pointer">
-          <Image className="w-full h-full object-cover" imgSrc={props.img} />
+          <Image className="w-full h-full object-cover" imgSrc={productInfo.img} />
         </div>
         <div className="w-full h-32 absolute bg-white -bottom-[130px] group-hover:bottom-0 duration-700 p-2 rounded-b-lg flex flex-col items-end justify-center">
           <button
@@ -125,9 +126,9 @@ export default function Product(props) {
       <div className="max-w-80 py-6 flex flex-col gap-1 border-[1px] border-t-0 px-4 rounded-b-lg bg-white">
         <div className="flex items-center justify-between font-titleFont">
           <h2 className="text-lg text-primeColor font-bold">
-            {props.productName}
+            {productInfo.productName}
           </h2>
-          <p className="text-[#767676] text-[14px]">₪{props.price}</p>
+          <p className="text-[#767676] text-[14px]">₪{productInfo.price}</p>
         </div>
       </div>
     </div>
