@@ -1,22 +1,72 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { resetCart } from "../../redux/slice";
 import ItemCard from "./ItemCard";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function Cart() {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.Reducer.products);
+  const [cart, setCart] = useState(null);
   const [totalAmt, setTotalAmt] = useState(0);
   const [shippingCharge, setShippingCharge] = useState(0);
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const fetchCart = async (userId) => {
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/orderdetails/all/${userId}`,
+        {
+          headers: {
+            Accept: "application/vnd.api+json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+      throw error;
+    }
+  };
+
+  const deleteAllProductsFromCart = async (userId) => {
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/order/${userId}/product`, {
+        headers: {
+          Accept: "application/vnd.api+json",
+        },
+      });
+      toast.success("All products deleted from the order successfully.");
+      setCart(null);
+      setTotalAmt(0);
+      setShippingCharge(0);
+    } catch (error) {
+      console.error("Error deleting all products from cart:", error);
+      toast.error("Failed to delete all products from the cart.");
+    }
+  };
 
   useEffect(() => {
-    let price = 0;
-    products.forEach((item) => {
-      price += item.price * item.quantity;
-    });
-    setTotalAmt(price);
-  }, [products]);
+    const loadCart = async () => {
+      try {
+        const cartData = await fetchCart(user.id);
+        setCart(cartData);
+        let price = 0;
+        cartData.order_details.forEach((item) => {
+          price += item.product.price * item.quantity;
+        });
+        setTotalAmt(price);
+      } catch (error) {
+        console.error("Error loading cart:", error);
+        toast.error("Failed to load cart.");
+      }
+    };
+
+    if (user && user.id) {
+      loadCart();
+    }
+  }, [user]);
 
   useEffect(() => {
     if (totalAmt <= 200) {
@@ -30,7 +80,7 @@ export default function Cart() {
 
   return (
     <div className="max-w-container mx-auto px-4">
-      {products.length > 0 ? (
+      {cart && cart.order_details.length > 0 ? (
         <div className="pb-20">
           <div className="w-full h-20 bg-[#F5F7F7] text-primeColor hidden lgl:grid grid-cols-5 place-content-center px-6 text-lg font-titleFont font-semibold">
             <h2 className="col-span-2">Product</h2>
@@ -39,17 +89,25 @@ export default function Cart() {
             <h2>Sub Total</h2>
           </div>
           <div className="mt-5">
-            {products.map((item) => (
-              <ItemCard key={item._id} item={item} />
+            {cart.order_details.map((item) => (
+              <ItemCard key={item.id} item={item} />
             ))}
           </div>
 
-          <button
-            onClick={() => dispatch(resetCart())}
-            className="py-2 px-10 bg-red-500 text-white font-semibold uppercase mb-4 hover:bg-red-700 duration-300"
-          >
-            Reset cart
-          </button>
+          <div className="flex gap-4">
+            <button
+              onClick={() => dispatch(resetCart())}
+              className="py-2 px-10 bg-red-500 text-white font-semibold uppercase mb-4 hover:bg-red-700 duration-300"
+            >
+              Reset cart
+            </button>
+            <button
+              onClick={() => deleteAllProductsFromCart(user.id)}
+              className="py-2 px-10 bg-red-500 text-white font-semibold uppercase mb-4 hover:bg-red-700 duration-300"
+            >
+              Delete All Products
+            </button>
+          </div>
 
           <div className="max-w-7xl flex justify-end mt-4">
             <div className="w-96 flex flex-col gap-4">
