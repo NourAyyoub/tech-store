@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function SignIn() {
@@ -9,7 +9,6 @@ export default function SignIn() {
   const [errPassword, setErrPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
-  const navigate = useNavigate();
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
@@ -50,13 +49,13 @@ export default function SignIn() {
         );
 
         if (response.status === 200) {
-          localStorage.setItem("token", response.data.token);
-          setSuccessMsg(`Hello ${email}, you have successfully signed in.`);
+          const { user, token } = response.data;
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(user));
+
+          setSuccessMsg(`Hello ${user.name}, you have successfully signed in.`);
           setEmail("");
           setPassword("");
-          setTimeout(() => {
-            navigate("/");
-          }, 2000);
         }
       } catch (error) {
         if (error.response) {
@@ -78,9 +77,9 @@ export default function SignIn() {
             <p className="w-full text-center text-green-500 font-medium font-titleFont mb-4">
               {successMsg}
             </p>
-            <Link to="/">
+            <Link to="/signup">
               <button className="w-full h-10 bg-primeColor text-gray-200 rounded-md text-base font-titleFont font-semibold tracking-wide hover:bg-black hover:text-white duration-300">
-                Go to Home
+                Sign Up
               </button>
             </Link>
           </div>
@@ -111,7 +110,6 @@ export default function SignIn() {
                   </p>
                 )}
               </div>
-
               <div className="flex flex-col gap-1">
                 <label className="font-titleFont text-base font-semibold text-gray-600">
                   Password
