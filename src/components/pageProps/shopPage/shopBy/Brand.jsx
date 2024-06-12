@@ -47,25 +47,28 @@ export default function Brand() {
         className="mb-4 p-2 border border-gray-300 rounded-lg w-full"
       />
 
-      <ul className="flex flex-col gap-4 text-sm lg:text-base text-gray-600">
-        {filteredBrands.map((brand, index) => (
-          <li
-            key={index}
-            className="border-b border-gray-200 pb-2 flex items-center gap-2 hover:text-primeColor hover:border-gray-400 duration-300"
-          >
-            <input
-              type="checkbox"
-              id={brand}
-              checked={checkedBrands.includes(brand)}
-              onChange={() => handleToggleBrand(brand)}
-              className="cursor-pointer"
-            />
-            <label htmlFor={brand} className="cursor-pointer flex-grow">
-              {brand}
-            </label>
-          </li>
-        ))}
-      </ul>
+      <div className="overflow-y-auto max-h-60">
+        <ul className="flex flex-col gap-4 text-sm lg:text-base text-gray-600">
+          {filteredBrands.map((brand, index) => (
+            <li
+              key={index}
+              className="border-b border-gray-200 pb-2 flex items-center gap-2 hover:text-primeColor hover:border-gray-400 duration-300"
+            >
+              <input
+                type="checkbox"
+                id={brand}
+                checked={checkedBrands.includes(brand)}
+                onChange={() => handleToggleBrand(brand)}
+                className="cursor-pointer"
+              />
+              <label htmlFor={brand} className="cursor-pointer flex-grow">
+                {brand}
+              </label>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
+

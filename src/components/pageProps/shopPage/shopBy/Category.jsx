@@ -49,25 +49,28 @@ export default function Category() {
         className="mb-4 p-2 border border-gray-300 rounded-lg w-full"
       />
 
-      <ul className="flex flex-col gap-4 text-sm lg:text-base text-gray-600">
-        {filteredCategories.map((category, index) => (
-          <li
-            key={index}
-            className="border-b border-gray-200 pb-2 flex items-center gap-2 hover:text-primeColor hover:border-gray-400 duration-300"
-          >
-            <input
-              type="checkbox"
-              id={category}
-              checked={checkedCategorys.includes(category)}
-              onChange={() => handleToggleCategory(category)}
-              className="cursor-pointer"
-            />
-            <label htmlFor={category} className="cursor-pointer flex-grow">
-              {category}
-            </label>
-          </li>
-        ))}
-      </ul>
+      <div className="overflow-y-auto max-h-60">
+        <ul className="flex flex-col gap-4 text-sm lg:text-base text-gray-600">
+          {filteredCategories.map((category, index) => (
+            <li
+              key={index}
+              className="border-b border-gray-200 pb-2 flex items-center gap-2 hover:text-primeColor hover:border-gray-400 duration-300"
+            >
+              <input
+                type="checkbox"
+                id={category}
+                checked={checkedCategorys.includes(category)}
+                onChange={() => handleToggleCategory(category)}
+                className="cursor-pointer"
+              />
+              <label htmlFor={category} className="cursor-pointer flex-grow">
+                {category}
+              </label>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
+
