@@ -36,7 +36,7 @@ export default function Cart() {
     }
   }, [token]);
 
-  const deleteAllProductsFromCart = async (userId) => {
+  const deleteAllProductsFromCart = async () => {
     try {
       await axios.delete(`http://127.0.0.1:8000/api/cart`, {
         headers: {
@@ -51,6 +51,26 @@ export default function Cart() {
     } catch (error) {
       console.error("Error deleting all products from cart:", error);
       toast.error("Failed to delete all products from the cart.");
+    }
+  };
+
+  const deleteProductFromOrder = async (orderId, productId) => {
+    try {
+      await axios.delete(
+        `http://127.0.0.1:8000/api/order/${orderId}/product/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.api+json",
+          },
+        }
+      );
+      toast.success("Product deleted from the order successfully.");
+      // إعادة تحميل تفاصيل السلة لتحديث المحتوى
+      fetchCartDetails();
+    } catch (error) {
+      console.error("Error deleting product from order:", error);
+      toast.error("Failed to delete product from the order.");
     }
   };
 
@@ -79,6 +99,7 @@ export default function Cart() {
             <h2>Price</h2>
             <h2>Quantity</h2>
             <h2>Sub Total</h2>
+            <h2>Action</h2>
           </div>
           <div className="mt-5">
             {cart.order_details.map((item) => (
@@ -105,13 +126,23 @@ export default function Cart() {
                 <div className="w-full text-center">
                   ₪{(item.product.price * item.quantity).toFixed(2)}
                 </div>
+                <div className="w-full text-center">
+                  <button
+                    onClick={() =>
+                      deleteProductFromOrder(cart.id, item.product.id)
+                    }
+                    className="py-1 px-3 bg-red-500 text-white font-semibold uppercase hover:bg-red-700 duration-300"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
 
           <div className="flex gap-4 mt-8">
             <button
-              onClick={() => deleteAllProductsFromCart(user.id)}
+              onClick={deleteAllProductsFromCart}
               className="py-2 px-10 bg-red-500 text-white font-semibold uppercase mb-4 hover:bg-red-700 duration-300"
             >
               Delete All Products
