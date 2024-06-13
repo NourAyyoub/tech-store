@@ -9,7 +9,7 @@ export default function Profile() {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
@@ -32,14 +32,13 @@ export default function Profile() {
           }
         );
 
-        setUser(response.data);
-        setName(response.data.name);
-        setEmail(response.data.email);
-        setPhoneNumber(response.data.phone_number);
-        setAddress(response.data.address);
+        setUser(response.data.user); // Save user object only
+        setName(response.data.user.name || "");
+        setEmail(response.data.user.email || "");
+        setPhoneNumber(response.data.user.phone_number || "");
+        setAddress(response.data.user.address || "");
       } catch (error) {
         console.error("Error fetching user:", error);
-        setError("Failed to fetch user details.");
       }
     };
 
@@ -52,7 +51,7 @@ export default function Profile() {
 
     try {
       const response = await axios.put(
-        "http://127.0.0.1:8000/api/user/update",
+        `http://127.0.0.1:8000/api/user/updateuser/${user.id}`, // Use user.id from the fetched user object
         { name, email, phone_number: phoneNumber, address },
         {
           headers: {
@@ -62,20 +61,25 @@ export default function Profile() {
         }
       );
 
-      setUser(response.data);
+      setUser(response.data.user); // Update user object after successful update
       setSuccessMsg("Profile updated successfully.");
+      setErrors({}); // Clear any previous errors
     } catch (error) {
       console.error("Error updating profile:", error);
-      setError("Failed to update profile.");
+      if (error.response && error.response.data && error.response.data.errors) {
+        setErrors(error.response.data.errors); // Set errors for each field
+      } else {
+        setErrors({ general: "Failed to update profile." }); // Set a generic error
+      }
     }
   };
 
   return (
     <div className="max-w-container mx-auto px-4 py-10">
       <h1 className="text-2xl font-bold mb-6">Profile</h1>
-      {error && (
+      {errors.general && (
         <div className="mb-4 p-4 bg-red-100 text-red-700 border border-red-400 rounded">
-          {error}
+          {errors.general}
         </div>
       )}
       {successMsg && (
@@ -93,6 +97,9 @@ export default function Profile() {
               onChange={(e) => setName(e.target.value)}
               className="px-4 py-2 border rounded"
             />
+            {errors.name && (
+              <p className="text-red-500">{errors.name.join(", ")}</p>
+            )}
           </div>
           <div className="flex flex-col">
             <label className="font-semibold">Email</label>
@@ -102,6 +109,9 @@ export default function Profile() {
               onChange={(e) => setEmail(e.target.value)}
               className="px-4 py-2 border rounded"
             />
+            {errors.email && (
+              <p className="text-red-500">{errors.email.join(", ")}</p>
+            )}
           </div>
           <div className="flex flex-col">
             <label className="font-semibold">Phone Number</label>
@@ -111,6 +121,9 @@ export default function Profile() {
               onChange={(e) => setPhoneNumber(e.target.value)}
               className="px-4 py-2 border rounded"
             />
+            {errors.phone_number && (
+              <p className="text-red-500">{errors.phone_number.join(", ")}</p>
+            )}
           </div>
           <div className="flex flex-col">
             <label className="font-semibold">Address</label>
@@ -120,6 +133,9 @@ export default function Profile() {
               onChange={(e) => setAddress(e.target.value)}
               className="px-4 py-2 border rounded"
             />
+            {errors.address && (
+              <p className="text-red-500">{errors.address.join(", ")}</p>
+            )}
           </div>
           <button
             type="submit"
