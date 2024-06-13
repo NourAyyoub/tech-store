@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { resetCart } from "../../redux/slice";
-import ItemCard from "./ItemCard";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -11,29 +10,40 @@ export default function Cart() {
   const [cart, setCart] = useState(null);
   const [totalAmt, setTotalAmt] = useState(0);
   const [shippingCharge, setShippingCharge] = useState(0);
+  const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const fetchCart = async (userId) => {
+  const fetchCartDetails = async () => {
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/orderdetails/all/${userId}`,
-        {
-          headers: {
-            Accept: "application/vnd.api+json",
-          },
+      const response = await axios.get('http://127.0.0.1:8000/api/order/cart', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.api+json",
         }
-      );
-      return response.data;
+      });
+
+      const cartData = response.data;
+      setCart(cartData);
+
+      // Calculate total amount
+      const total = cartData.order_details.reduce((acc, item) => {
+        return acc + (item.product.price * item.quantity);
+      }, 0);
+      setTotalAmt(total);
+
+      // Print cart data to the console
+      console.log(cartData);
     } catch (error) {
-      console.error("Error fetching cart:", error);
-      throw error;
+      console.error("Failed to fetch cart details", error);
+      toast.error("Failed to fetch cart details");
     }
   };
 
   const deleteAllProductsFromCart = async (userId) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/order/${userId}/product`, {
+      await axios.delete(`http://127.0.0.1:8000/api/cart`, {
         headers: {
+          Authorization: `Bearer ${token}`,
           Accept: "application/vnd.api+json",
         },
       });
@@ -48,25 +58,10 @@ export default function Cart() {
   };
 
   useEffect(() => {
-    const loadCart = async () => {
-      try {
-        const cartData = await fetchCart(user.id);
-        setCart(cartData);
-        let price = 0;
-        cartData.order_details.forEach((item) => {
-          price += item.product.price * item.quantity;
-        });
-        setTotalAmt(price);
-      } catch (error) {
-        console.error("Error loading cart:", error);
-        toast.error("Failed to load cart.");
-      }
-    };
-
-    if (user && user.id) {
-      loadCart();
+    if (user && token) {
+      fetchCartDetails();
     }
-  }, [user]);
+  }, [user, token]);
 
   useEffect(() => {
     if (totalAmt <= 200) {
@@ -90,17 +85,27 @@ export default function Cart() {
           </div>
           <div className="mt-5">
             {cart.order_details.map((item) => (
-              <ItemCard key={item.id} item={item} />
+              <div key={item.id} className="grid grid-cols-5 items-center border-b py-4">
+                <div className="col-span-2 flex items-center gap-4">
+                  <img src={item.product.image_url} alt={item.product.name} className="w-20 h-20 object-cover" />
+                  <div>
+                    <h3 className="text-lg font-semibold">{item.product.name}</h3>
+                  </div>
+                </div>
+                <div className="w-full text-center">
+                  ₪{item.product.price.toFixed(2)}
+                </div>
+                <div className="w-full text-center">
+                  {item.quantity}
+                </div>
+                <div className="w-full text-center">
+                  ₪{(item.product.price * item.quantity).toFixed(2)}
+                </div>
+              </div>
             ))}
           </div>
 
-          <div className="flex gap-4">
-            <button
-              onClick={() => dispatch(resetCart())}
-              className="py-2 px-10 bg-red-500 text-white font-semibold uppercase mb-4 hover:bg-red-700 duration-300"
-            >
-              Reset cart
-            </button>
+          <div className="flex gap-4 mt-8">
             <button
               onClick={() => deleteAllProductsFromCart(user.id)}
               className="py-2 px-10 bg-red-500 text-white font-semibold uppercase mb-4 hover:bg-red-700 duration-300"
@@ -143,7 +148,7 @@ export default function Cart() {
           </div>
         </div>
       ) : (
-        <div className="max-w-[500px] p-6 py-10 bg-white flex flex-col items-center rounded-md  mx-auto mt-20">
+        <div className="max-w-[500px] p-6 py-10 bg-white flex flex-col items-center rounded-md mx-auto mt-20">
           <h1 className="font-titleFont text-xl font-bold uppercase">
             Your Cart is empty!
           </h1>
