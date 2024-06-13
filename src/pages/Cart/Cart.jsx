@@ -94,7 +94,7 @@ export default function Cart() {
     <div className="max-w-container mx-auto px-4">
       {cart && cart.order_details.length > 0 ? (
         <div className="pb-20">
-          <div className="w-full h-20 bg-[#F5F7F7] text-primeColor hidden lgl:grid grid-cols-5 place-content-center px-6 text-lg font-titleFont font-semibold">
+          <div className="w-full h-20 bg-[#F5F7F7] text-primeColor hidden lgl:grid grid-cols-6 place-content-center px-6 text-lg font-titleFont font-semibold">
             <h2 className="col-span-2">Product</h2>
             <h2>Price</h2>
             <h2>Quantity</h2>
@@ -105,7 +105,7 @@ export default function Cart() {
             {cart.order_details.map((item) => (
               <div
                 key={item.id}
-                className="grid grid-cols-5 items-center border-b py-4"
+                className="grid grid-cols-6 items-center border-b py-4"
               >
                 <div className="col-span-2 flex items-center gap-4">
                   <img
@@ -128,12 +128,10 @@ export default function Cart() {
                 </div>
                 <div className="w-full text-center">
                   <button
-                    onClick={() =>
-                      deleteProductFromOrder(cart.id, item.product.id)
-                    }
+                    onClick={() => deleteProductFromOrder(cart.id, item.product.id)}
                     className="py-1 px-3 bg-red-500 text-white font-semibold uppercase hover:bg-red-700 duration-300"
                   >
-                    Delete
+                    X
                   </button>
                 </div>
               </div>
