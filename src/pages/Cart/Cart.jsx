@@ -38,6 +38,28 @@ export default function Cart() {
     }
   }, [token]);
 
+  const updateProductQuantity = async (orderId, productId, quantity) => {
+    try {
+      await axios.put(
+        `http://127.0.0.1:8000/api/orderdetails/update/${orderId}/${productId}`,
+        {
+          quantity: quantity.toString(),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.api+json",
+          },
+        }
+      );
+      toast.success("Product quantity updated successfully.");
+      fetchCartDetails();
+    } catch (error) {
+      console.error("Error updating product quantity:", error);
+      toast.error("Failed to update product quantity.");
+    }
+  };
+
   const deleteAllProductsFromCart = async () => {
     try {
       await axios.delete("http://127.0.0.1:8000/api/cart", {
@@ -155,7 +177,33 @@ export default function Cart() {
                     <div className="w-full text-center">
                       ₪{item.product.price.toFixed(2)}
                     </div>
-                    <div className="w-full text-center">{item.quantity}</div>
+                    <div className="w-full text-center">
+                      <button
+                        onClick={() =>
+                          updateProductQuantity(
+                            cart.id,
+                            item.product.id,
+                            item.quantity - 1
+                          )
+                        }
+                        className="py-1 px-3 bg-red-500 text-white font-semibold uppercase hover:bg-red-700 duration-300 mr-2"
+                      >
+                        -
+                      </button>
+                      {item.quantity}
+                      <button
+                        onClick={() =>
+                          updateProductQuantity(
+                            cart.id,
+                            item.product.id,
+                            item.quantity + 1
+                          )
+                        }
+                        className="py-1 px-3 bg-green-500 text-white font-semibold uppercase hover:bg-green-700 duration-300 ml-2"
+                      >
+                        +
+                      </button>
+                    </div>
                     <div className="w-full text-center">
                       ₪{(item.product.price * item.quantity).toFixed(2)}
                     </div>
