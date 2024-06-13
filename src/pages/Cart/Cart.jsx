@@ -183,7 +183,7 @@ export default function Cart() {
                           updateProductQuantity(
                             cart.id,
                             item.product.id,
-                            item.quantity - 1
+                             - 1
                           )
                         }
                         className="py-1 px-3 bg-red-500 text-white font-semibold uppercase hover:bg-red-700 duration-300 mr-2"
@@ -196,7 +196,7 @@ export default function Cart() {
                           updateProductQuantity(
                             cart.id,
                             item.product.id,
-                            item.quantity + 1
+                            1 
                           )
                         }
                         className="py-1 px-3 bg-green-500 text-white font-semibold uppercase hover:bg-green-700 duration-300 ml-2"
