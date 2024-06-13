@@ -1,25 +1,22 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { resetCart } from "../../redux/slice";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 export default function Cart() {
-  const dispatch = useDispatch();
   const [cart, setCart] = useState(null);
   const [totalAmt, setTotalAmt] = useState(0);
   const [shippingCharge, setShippingCharge] = useState(0);
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const fetchCartDetails = async () => {
+  const fetchCartDetails = useCallback(async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/order/cart', {
+      const response = await axios.get("http://127.0.0.1:8000/api/order/cart", {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/vnd.api+json",
-        }
+        },
       });
 
       const cartData = response.data;
@@ -27,7 +24,7 @@ export default function Cart() {
 
       // Calculate total amount
       const total = cartData.order_details.reduce((acc, item) => {
-        return acc + (item.product.price * item.quantity);
+        return acc + item.product.price * item.quantity;
       }, 0);
       setTotalAmt(total);
 
@@ -37,7 +34,7 @@ export default function Cart() {
       console.error("Failed to fetch cart details", error);
       toast.error("Failed to fetch cart details");
     }
-  };
+  }, [token]);
 
   const deleteAllProductsFromCart = async (userId) => {
     try {
@@ -61,7 +58,7 @@ export default function Cart() {
     if (user && token) {
       fetchCartDetails();
     }
-  }, [user, token]);
+  }, [user, token, fetchCartDetails]);
 
   useEffect(() => {
     if (totalAmt <= 200) {
@@ -85,19 +82,26 @@ export default function Cart() {
           </div>
           <div className="mt-5">
             {cart.order_details.map((item) => (
-              <div key={item.id} className="grid grid-cols-5 items-center border-b py-4">
+              <div
+                key={item.id}
+                className="grid grid-cols-5 items-center border-b py-4"
+              >
                 <div className="col-span-2 flex items-center gap-4">
-                  <img src={item.product.image_url} alt={item.product.name} className="w-20 h-20 object-cover" />
+                  <img
+                    src={item.product.image_url}
+                    alt={item.product.name}
+                    className="w-20 h-20 object-cover"
+                  />
                   <div>
-                    <h3 className="text-lg font-semibold">{item.product.name}</h3>
+                    <h3 className="text-lg font-semibold">
+                      {item.product.name}
+                    </h3>
                   </div>
                 </div>
                 <div className="w-full text-center">
                   ₪{item.product.price.toFixed(2)}
                 </div>
-                <div className="w-full text-center">
-                  {item.quantity}
-                </div>
+                <div className="w-full text-center">{item.quantity}</div>
                 <div className="w-full text-center">
                   ₪{(item.product.price * item.quantity).toFixed(2)}
                 </div>
