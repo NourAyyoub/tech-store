@@ -27,7 +27,9 @@ const ProtectedRoute = ({ requiredRole }) => {
           }
         );
 
-        const user = response.data;
+        
+        console.log(response);
+        const user = response.data.user;
         if (user && user.status === requiredRole) {
           setIsAuthorized(true);
         } else {

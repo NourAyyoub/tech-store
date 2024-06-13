@@ -41,7 +41,7 @@ export default function Header() {
               },
             }
           );
-          setUserRole(response.data.status);
+          setUserRole(response.data.user.status); // Update userRole with status
         } catch (error) {
           console.error("Error fetching user role:", error);
         }
