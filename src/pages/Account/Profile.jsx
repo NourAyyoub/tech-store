@@ -32,13 +32,27 @@ export default function Profile() {
           }
         );
 
-        setUser(response.data.user); // Save user object only
-        setName(response.data.user.name || "");
-        setEmail(response.data.user.email || "");
-        setPhoneNumber(response.data.user.phone_number || "");
-        setAddress(response.data.user.address || "");
+        const user = response.data.user;
+        setUser(user); // Save user object only
+        setName(user.name || "");
+        setEmail(user.email || "");
+        setPhoneNumber(user.phone_number || "");
+        setAddress(user.address || "");
+
+        // Fetch user order using user ID
+        const orderResponse = await axios.get(
+          `http://127.0.0.1:8000/api/user/order/${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/vnd.api+json",
+            },
+          }
+        );
+
+        console.log("User Order:", orderResponse.data);
       } catch (error) {
-        console.error("Error fetching user:", error);
+        console.error("Error fetching user or order:", error);
       }
     };
 
