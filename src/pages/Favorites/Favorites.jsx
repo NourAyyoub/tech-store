@@ -10,7 +10,7 @@ export default function Favorites() {
   const fetchFavoriteProducts = useCallback(async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/favorite/user/${user.id}`,
+        `http://127.0.0.1:8000/api/favorite/user`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -56,10 +56,10 @@ export default function Favorites() {
     }
   };
 
-  const addToCart = (productId) => {
-    // دالة وهمية لإضافة المنتج للسلة
-    console.log(`Product with id ${productId} added to cart`);
-  };
+  // const addToCart = (productId) => {
+  //   // دالة وهمية لإضافة المنتج للسلة
+  //   console.log(`Product with id ${productId} added to cart`);
+  // };
 
   const removeAllFavorites = async () => {
     try {
@@ -135,7 +135,7 @@ export default function Favorites() {
                     Remove
                   </button>
                   <button
-                    onClick={() => addToCart(product.id)}
+                    // onClick={() => addToCart(product.id)}
                     className="py-1 px-3 bg-green-500 text-white font-semibold uppercase hover:bg-green-700 duration-300 ml-2"
                   >
                     Add to Cart
