@@ -77,11 +77,23 @@ export default function Favorites() {
     }
   };
 
-  const addAllToCart = () => {
-    // دالة وهمية لإضافة جميع المنتجات للسلة
-    favoriteProducts.forEach(({ product }) => {
-      console.log(`Product with id ${product.id} added to cart`);
-    });
+  const addAllToCart = async () => {
+    try {
+      await axios.post(
+        "http://127.0.0.1:8000/api/favorite/cart",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.api+json",
+          },
+        }
+      );
+      toast.success("All favorite products added to cart successfully.");
+    } catch (error) {
+      console.error("Error adding all favorite products to cart:", error);
+      toast.error("Failed to add all favorite products to cart.");
+    }
   };
 
   return (
