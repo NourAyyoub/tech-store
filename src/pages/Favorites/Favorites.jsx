@@ -33,10 +33,7 @@ export default function Favorites() {
   }, [user, token, fetchFavoriteProducts]);
 
   const toggleFavoriteStatus = async (productId) => {
-    if (!user || !user.id) {
-      toast.error("User is not logged in.");
-      return;
-    }
+
     try {
       const formData = new FormData();
       formData.append("customer_id", user.id);
@@ -62,30 +59,23 @@ export default function Favorites() {
   };
 
   const removeAllFavorites = async () => {
-    if (!user || !user.id) {
-      toast.error("User is not logged in.");
-      return;
-    }
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/favorite/${user.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/vnd.api+json",
-        },
-      });
-      toast.success("All favorite products removed successfully.");
-      setFavoriteProducts([]); // Clear the favorite products list
-    } catch (error) {
-      console.error("Error removing all favorite products:", error);
-      toast.error("Failed to remove all favorite products.");
-    }
+      const response = await axios.delete(`http://127.0.0.1:8000/api/favorite`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.api+json",
+      },
+    });
+    console.log("Response from API:", response.data); // Log the response data
+    toast.success("All favorite products removed successfully.");
+    setFavoriteProducts([]); // Clear the favorite products list
+  } catch (error) {
+    console.error("Error removing all favorite products:", error);
+    toast.error("Failed to remove all favorite products.");
+  }
   };
 
   const addAllToCart = async () => {
-    if (!user || !user.id) {
-      toast.error("User is not logged in.");
-      return;
-    }
     try {
       await axios.post(
         "http://127.0.0.1:8000/api/favorite/cart",
