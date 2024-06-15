@@ -8,9 +8,13 @@ export default function Favorites() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   const fetchFavoriteProducts = useCallback(async () => {
+    if (!user || !user.id) {
+      toast.error("User is not logged in.");
+      return;
+    }
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/favorite/user`,
+        `http://127.0.0.1:8000/api/favorite/user/${user.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -23,7 +27,7 @@ export default function Favorites() {
       console.error("Error fetching favorite products:", error);
       toast.error("Failed to fetch favorite products.");
     }
-  }, [token, user.id]);
+  }, [token, user]);
 
   useEffect(() => {
     if (user && token) {
@@ -32,6 +36,10 @@ export default function Favorites() {
   }, [user, token, fetchFavoriteProducts]);
 
   const toggleFavoriteStatus = async (productId) => {
+    if (!user || !user.id) {
+      toast.error("User is not logged in.");
+      return;
+    }
     try {
       const formData = new FormData();
       formData.append("customer_id", user.id);
@@ -56,12 +64,16 @@ export default function Favorites() {
     }
   };
 
-  // const addToCart = (productId) => {
-  //   // دالة وهمية لإضافة المنتج للسلة
-  //   console.log(`Product with id ${productId} added to cart`);
-  // };
+  const addToCart = (productId) => {
+    // دالة وهمية لإضافة المنتج للسلة
+    console.log(`Product with id ${productId} added to cart`);
+  };
 
   const removeAllFavorites = async () => {
+    if (!user || !user.id) {
+      toast.error("User is not logged in.");
+      return;
+    }
     try {
       await axios.delete(`http://127.0.0.1:8000/api/favorite/${user.id}`, {
         headers: {
@@ -78,6 +90,10 @@ export default function Favorites() {
   };
 
   const addAllToCart = async () => {
+    if (!user || !user.id) {
+      toast.error("User is not logged in.");
+      return;
+    }
     try {
       await axios.post(
         "http://127.0.0.1:8000/api/favorite/cart",
@@ -135,7 +151,7 @@ export default function Favorites() {
                     Remove
                   </button>
                   <button
-                    // onClick={() => addToCart(product.id)}
+                    onClick={() => addToCart(product.id)}
                     className="py-1 px-3 bg-green-500 text-white font-semibold uppercase hover:bg-green-700 duration-300 ml-2"
                   >
                     Add to Cart
