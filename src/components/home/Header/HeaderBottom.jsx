@@ -6,6 +6,8 @@ import Flex from "../../designLayouts/Flex";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { fetchProducts } from "../../../assets/Api/fetchProducts";
+import { toast } from "react-toastify";
+
 
 export default function HeaderBottom() {
   const productsInCart = useSelector((state) => state.Reducer.products);
@@ -59,6 +61,15 @@ export default function HeaderBottom() {
     setFilteredProducts(filtered);
   }, [searchQuery, products]);
 
+  const handleFavoritesClick = () => {
+    if (!isLoggedIn) {
+      toast.error("Please log in to view your favorites.");
+      navigate("/signin");
+    } else {
+      navigate("/favorites");
+    }
+  };
+
   return (
     <div className="w-full bg-[#ffffff] relative">
       <div className="max-w-container mx-auto">
@@ -104,10 +115,11 @@ export default function HeaderBottom() {
                         {item.name}
                       </p>
                       <p className="text-xs text-gray-600">
-                        {item.description.length > 100
-                          ? `${item.description.slice(0, 100)}...`
-                          : item.description}
-                      </p>
+  {item.description.length > 100
+    ? `${item.description.slice(0, 100)}...`
+    : item.description}
+</p>
+
                       <p className="text-sm text-gray-800">
                         Price:{" "}
                         <span className="text-primeColor font-semibold">
@@ -173,9 +185,9 @@ export default function HeaderBottom() {
                 </span>
               </div>
             </Link>
-            <Link to="/favorites">
+            <div onClick={handleFavoritesClick}>
               <BsSuitHeartFill className="w-5 h-5 text-gray-600 hover:text-primeColor transition-colors duration-300" />
-            </Link>
+            </div>
           </div>
         </Flex>
       </div>
