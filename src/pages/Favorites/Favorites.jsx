@@ -1,11 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom"; // Assuming you are using react-router-dom for navigation
 
 export default function Favorites() {
   const [favoriteProducts, setFavoriteProducts] = useState([]);
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate(); // Hook for navigation
+  const isLoggedIn = !!token && !!user; // Check if the user is logged in
 
   const fetchFavoriteProducts = useCallback(async () => {
     try {
@@ -33,7 +36,6 @@ export default function Favorites() {
   }, [user, token, fetchFavoriteProducts]);
 
   const toggleFavoriteStatus = async (productId) => {
-
     try {
       const formData = new FormData();
       formData.append("customer_id", user.id);
@@ -61,18 +63,18 @@ export default function Favorites() {
   const removeAllFavorites = async () => {
     try {
       const response = await axios.delete(`http://127.0.0.1:8000/api/favorite`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.api+json",
-      },
-    });
-    console.log("Response from API:", response.data); // Log the response data
-    toast.success("All favorite products removed successfully.");
-    setFavoriteProducts([]); // Clear the favorite products list
-  } catch (error) {
-    console.error("Error removing all favorite products:", error);
-    toast.error("Failed to remove all favorite products.");
-  }
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.api+json",
+        },
+      });
+      console.log("Response from API:", response.data); // Log the response data
+      toast.success("All favorite products removed successfully.");
+      setFavoriteProducts([]); // Clear the favorite products list
+    } catch (error) {
+      console.error("Error removing all favorite products:", error);
+      toast.error("Failed to remove all favorite products.");
+    }
   };
 
   const addAllToCart = async () => {
@@ -91,6 +93,53 @@ export default function Favorites() {
     } catch (error) {
       console.error("Error adding all favorite products to cart:", error);
       toast.error("Failed to add all favorite products to cart.");
+    }
+  };
+
+  const handleAddToCart = async (productInfo) => {
+    if (!isLoggedIn) {
+      toast.error("Please log in to add items to your cart");
+      navigate("/signin");
+      return;
+    }
+
+    try {
+      // Step 1: Create Order to get order_id
+      const createOrderResponse = await axios.post(
+        "http://127.0.0.1:8000/api/order/create",
+        {
+          // Add other necessary order details if required
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.api+json",
+          },
+        }
+      );
+
+      const orderId = createOrderResponse.data.order_id;
+
+      // Step 2: Add product to the created order
+      await axios.post(
+        "http://127.0.0.1:8000/api/orderdetails/create",
+        {
+          order_id: orderId,
+          product_id: productInfo.id,
+          quantity: 1,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.api+json",
+          },
+        }
+      );
+
+      toast.success("Product added to cart");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Failed to add product to cart.");
     }
   };
 
@@ -133,8 +182,8 @@ export default function Favorites() {
                     Remove
                   </button>
                   <button
+                    onClick={() => handleAddToCart(product)}
                     className="py-1 px-3 bg-green-500 text-white font-semibold uppercase hover:bg-green-700 duration-300 ml-2"
-                    // onClick={() => addToCart(product.id)}
                   >
                     Add to Cart
                   </button>

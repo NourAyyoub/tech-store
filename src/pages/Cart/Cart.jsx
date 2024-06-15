@@ -179,7 +179,7 @@ export default function Cart() {
   return (
     <div className="max-w-container mx-auto px-4">
       {/* Render based on whether cart has items */}
-      {cart && cart.order_details.length > 0 ? (
+      {cart && cart.order_details && cart.order_details.length > 0 ? (
         <div className="pb-20">
           {!isCheckout ? (
             <>
