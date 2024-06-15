@@ -70,6 +70,7 @@ export default function Cart() {
     }
 
     try {
+      // Confirm the order
       await axios.put(
         `http://127.0.0.1:8000/api/order/confirm/${orderId}`,
         { delivery_address: shippingAddress },
@@ -80,6 +81,31 @@ export default function Cart() {
           },
         }
       );
+
+      // Update the request count and quantity for each product in the order
+      for (const item of cart.order_details) {
+        await axios.put(
+          `http://127.0.0.1:8000/api/product/updaterequestcount/${item.product.id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/vnd.api+json",
+            },
+          }
+        );
+
+        await axios.put(
+          `http://127.0.0.1:8000/api/product/updatequantity/decrease/${item.product.id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/vnd.api+json",
+            },
+          }
+        );
+      }
 
       toast.success("Order confirmed successfully.");
     } catch (error) {
