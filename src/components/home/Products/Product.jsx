@@ -33,15 +33,36 @@ export default function Product(productInfo) {
     });
   };
 
-  const handleWishList = () => {
+  const handleWishList = async () => {
     if (!isLoggedIn) {
       toast.error("Please log in to add items to your wishlist");
       navigate("/signin");
       return;
     }
-    toast.success("Product added to wish List");
-    setWishList([...wishList, productInfo]);
-    console.log(wishList);
+
+    try {
+      const formData = new FormData();
+      formData.append("customer_id", user.id);
+      formData.append("product_id", productInfo._id);
+
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/user/favorite",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.api+json",
+          },
+        }
+      );
+
+      toast.success(response.data.message);
+      setWishList([...wishList, productInfo]);
+      console.log(wishList);
+    } catch (error) {
+      console.error("Error adding to wishlist:", error);
+      toast.error("Failed to add product to wishlist.");
+    }
   };
 
   const handleAddToCart = async () => {
@@ -58,7 +79,6 @@ export default function Product(productInfo) {
         {
           // delivery_address: "nablus",
           // customer_id: user.id, // Use the user ID from localStorage
-          
         },
         {
           headers: {
@@ -97,7 +117,10 @@ export default function Product(productInfo) {
     <div className="w-full relative group shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden">
       <div className="max-w-80 max-h-80 relative overflow-hidden rounded-lg">
         <div onClick={handleProductDetails} className="cursor-pointer">
-          <Image className="w-full h-full object-cover" imgSrc={productInfo.img} />
+          <Image
+            className="w-full h-full object-cover"
+            imgSrc={productInfo.img}
+          />
         </div>
         <div className="w-full h-32 absolute bg-white -bottom-[130px] group-hover:bottom-0 duration-700 p-2 rounded-b-lg flex flex-col items-end justify-center">
           <button

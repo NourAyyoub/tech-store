@@ -18,6 +18,7 @@ import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Shop from "./pages/Shop/Shop";
 import Admin from "./pages/Admin/Admin";
 import Profile from "./pages/Account/Profile";
+import Favorites from "./pages/Favorites/Favorites";
 import ProtectedRoute from "./ProtectedRoute";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -41,6 +42,7 @@ const router = createBrowserRouter(
         <Route path="/shop" element={<Shop />} />
         <Route path="/about" element={<About />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/favorites" element={<Favorites />} />{" "}
         {/* ==================== Header Navlink End here ===================== */}
         <Route path="/product/:_id" element={<ProductDetails />} />
         <Route path="/cart" element={<Cart />} />

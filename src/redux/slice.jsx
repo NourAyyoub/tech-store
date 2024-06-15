@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 const initialState = {
   userInfo: [],
   products: [],
+  favorites: [],
   checkedBrands: [],
   checkedCategorys: [],
 };

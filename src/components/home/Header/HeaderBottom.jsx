@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaSearch, FaUser, FaCaretDown, FaShoppingCart } from "react-icons/fa";
+import { BsSuitHeartFill } from "react-icons/bs";
 import Flex from "../../designLayouts/Flex";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { fetchProducts } from "../../../assets/Api/fetchProducts"; // Make sure the path is correct
-import { BsSuitHeartFill } from "react-icons/bs";
+import { fetchProducts } from "../../../assets/Api/fetchProducts";
 
 export default function HeaderBottom() {
   const productsInCart = useSelector((state) => state.Reducer.products);
@@ -80,7 +80,10 @@ export default function HeaderBottom() {
                   <div
                     onClick={() =>
                       navigate(
-                        `/product/${item.name.toLowerCase().split(" ").join("")}`,
+                        `/product/${item.name
+                          .toLowerCase()
+                          .split(" ")
+                          .join("")}`,
                         {
                           state: {
                             item: item,
@@ -166,11 +169,13 @@ export default function HeaderBottom() {
               <div className="relative">
                 <FaShoppingCart className="w-5 h-5 text-gray-600 hover:text-primeColor transition-colors duration-300" />
                 <span className="absolute font-titleFont top-0 right-0 transform translate-x-1/2 -translate-y-1/2 text-xs w-4 h-4 flex items-center justify-center rounded-full bg-primeColor text-white">
-                {productsInCart.length > 0 ? productsInCart.length : 0}
+                  {productsInCart.length > 0 ? productsInCart.length : 0}
                 </span>
               </div>
             </Link>
-            <BsSuitHeartFill className="w-5 h-5 text-gray-600 hover:text-primeColor transition-colors duration-300" />
+            <Link to="/favorites">
+              <BsSuitHeartFill className="w-5 h-5 text-gray-600 hover:text-primeColor transition-colors duration-300" />
+            </Link>
           </div>
         </Flex>
       </div>

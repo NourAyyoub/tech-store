@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
+import { toast } from "react-toastify"; // تأكد من استيراد مكتبة toast إذا لم تكن مستوردة
 
 ProductInfo.propTypes = {
   productInfo: PropTypes.object,
@@ -52,7 +53,6 @@ export default function ProductInfo({ productInfo }) {
         {
           // delivery_address: "nablus",
           // customer_id: user.id, // Use the user ID from localStorage
-          
         },
         {
           headers: {
@@ -88,6 +88,39 @@ export default function ProductInfo({ productInfo }) {
     }
   };
 
+  const handleWishList = async () => {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!token) {
+      toast.error("Please log in to add items to your wishlist");
+      navigate("/signin");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("customer_id", user.id);
+      formData.append("product_id", productInfo._id);
+
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/user/favorite",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.api+json",
+          },
+        }
+      );
+
+      toast.success(response.data.message);
+    } catch (error) {
+      console.error("Error adding to wishlist:", error);
+      toast.error("Failed to add product to wishlist.");
+    }
+  };
+
   return (
     <div className="flex flex-col gap-5 p-4 overflow-hidden">
       <h2 className="text-4xl font-semibold">{productInfo.productName}</h2>
@@ -101,6 +134,12 @@ export default function ProductInfo({ productInfo }) {
         disabled={loading}
       >
         {loading ? "Adding..." : "Add to Cart"}
+      </button>
+      <button
+        onClick={handleWishList}
+        className="w-full py-4 bg-red-500 hover:bg-red-600 duration-300 text-white text-lg font-titleFont"
+      >
+        Add to Wishlist
       </button>
       {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
