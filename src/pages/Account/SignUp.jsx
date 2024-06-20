@@ -77,7 +77,7 @@ export default function SignUp() {
     if (!password) {
       setErrPassword("Create a password");
       valid = false;
-    } else if (password.length <8) {
+    } else if (password.length < 8) {
       setErrPassword("Passwords must be at least 8 characters");
       valid = false;
     }
@@ -134,7 +134,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="w-full flex items-center justify-center bg-gray-100">
+    <div className="w-full flex items-center justify-center">
       <div className="w-full lgl:w-[500px] h-auto flex items-center justify-center">
         <div className="w-full bg-white p-8 rounded-lg shadow-md">
           {successMsg && (
@@ -281,6 +281,13 @@ export default function SignUp() {
                   <Link to="/signin">
                     <span className="hover:text-blue-600 duration-300">
                       Sign in
+                    </span>
+                  </Link>
+                </p>{" "}
+                <p className="text-sm text-center font-titleFont font-medium mt-4">
+                  <Link to="/">
+                    <span className="hover:text-blue-600 duration-300">
+                      Back to Home
                     </span>
                   </Link>
                 </p>

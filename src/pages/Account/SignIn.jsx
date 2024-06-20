@@ -71,7 +71,7 @@ export default function SignIn() {
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-gray-100">
+    <div className="w-full h-screen flex items-center justify-center">
       <div className="w-full lgl:w-1/2 h-full flex items-center justify-center">
         <form
           onSubmit={handleSignIn}
@@ -134,6 +134,13 @@ export default function SignIn() {
               <Link to="/signup">
                 <span className="hover:text-blue-600 duration-300">
                   Sign up
+                </span>
+              </Link>
+            </p>
+            <p className="text-sm text-center font-titleFont font-medium mt-4">
+              <Link to="/">
+                <span className="hover:text-blue-600 duration-300">
+                  Back to Home
                 </span>
               </Link>
             </p>
