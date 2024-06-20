@@ -10,7 +10,6 @@ export default function OrdersList() {
   const [searchDate, setSearchDate] = useState("");
   const [searchStatus, setSearchStatus] = useState("");
   const [searchAddress, setSearchAddress] = useState("");
-  const [sortBy, setSortBy] = useState("");
   const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   useEffect(() => {
@@ -66,22 +65,8 @@ export default function OrdersList() {
       );
     }
 
-    if (sortBy === "status") {
-      filtered.sort((a, b) => a.status.localeCompare(b.status));
-    } else if (sortBy === "date") {
-      filtered.sort((a, b) => new Date(a.order_date) - new Date(b.order_date));
-    }
-
     setFilteredOrders(filtered);
-  }, [
-    orders,
-    searchId,
-    searchName,
-    searchDate,
-    searchStatus,
-    searchAddress,
-    sortBy,
-  ]);
+  }, [orders, searchId, searchName, searchDate, searchStatus, searchAddress]);
 
   const updateOrderStatus = async (orderId, status) => {
     setError(null);
@@ -134,6 +119,9 @@ export default function OrdersList() {
       );
       if (response.data.status) {
         setOrders(orders.filter((order) => order.id !== orderId));
+        setFilteredOrders(
+          filteredOrders.filter((order) => order.id !== orderId)
+        );
       } else {
         console.error("Error deleting order:", response.data.message);
         setError("Failed to delete the order. Please try again.");
@@ -170,6 +158,13 @@ export default function OrdersList() {
         </div>
       </div>
       <div className="flex flex-col md:flex-row md:space-x-4 mt-4">
+        <input
+          type="text"
+          placeholder="Filter by Order ID"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+          className="mb-2 md:mb-0 px-4 py-2 border rounded"
+        />
         <input
           type="text"
           placeholder="Filter by Customer Name"
@@ -210,6 +205,9 @@ export default function OrdersList() {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Order ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Customer Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -224,11 +222,15 @@ export default function OrdersList() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Details
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredOrders.map((order) => (
                   <tr key={order.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">{order.id}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {order.user.name}
                     </td>
@@ -303,6 +305,14 @@ export default function OrdersList() {
                           </table>
                         </div>
                       )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
+                      <button
+                        onClick={() => handleDelete(order.id)}
+                        className="bg-red-500 text-white px-4 py-2 rounded"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
