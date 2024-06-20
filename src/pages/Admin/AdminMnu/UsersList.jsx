@@ -35,6 +35,7 @@ export default function UsersList() {
   useEffect(() => {
     const filtered = users.filter(
       (user) =>
+        user.id.toString().includes(searchTerm) ||
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -81,7 +82,7 @@ export default function UsersList() {
           <div className="mb-6 flex items-center">
             <input
               type="text"
-              placeholder="Search by Name or Email"
+              placeholder="Search by Name or Email or ID"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="px-4 py-2 border rounded"
