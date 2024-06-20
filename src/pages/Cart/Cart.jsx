@@ -28,8 +28,6 @@ export default function Cart() {
         return acc + item.product.price * item.quantity;
       }, 0);
       setTotalAmt(total);
-
-      console.log(cartData);
     } catch (error) {
       console.error("Failed to fetch cart details", error);
       toast.error("Failed to fetch cart details");
