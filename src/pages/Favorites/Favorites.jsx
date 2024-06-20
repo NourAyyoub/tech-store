@@ -9,7 +9,7 @@ export default function Favorites() {
   const token = localStorage.getItem("token");
   const user = useMemo(() => JSON.parse(localStorage.getItem("user")), []);
   const navigate = useNavigate();
-  const isLoggedIn = !!token && !!user;
+  const isLoggedIn = !!user;
 
   const fetchFavoriteProducts = useCallback(async () => {
     try {
@@ -23,7 +23,11 @@ export default function Favorites() {
         }
       );
 
-      setFavoriteProducts(response.data.favorite_products);
+      if (response.data.favorite_products) {
+        setFavoriteProducts(response.data.favorite_products);
+      } else {
+        setFavoriteProducts([]);
+      }
     } catch (error) {
       console.error("Error fetching favorite products:", error);
       toast.error("Failed to fetch favorite products.");
@@ -33,10 +37,10 @@ export default function Favorites() {
   }, [token]);
 
   useEffect(() => {
-    if (user && token) {
+    if (user) {
       fetchFavoriteProducts();
     }
-  }, [user, token, fetchFavoriteProducts]);
+  }, [user, fetchFavoriteProducts]);
 
   const toggleFavoriteStatus = useCallback(
     async (productId) => {
