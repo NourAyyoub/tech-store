@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom"; // Assuming you are using react-router-dom for navigation
+import { useNavigate } from "react-router-dom";
 
 export default function Favorites() {
   const [favoriteProducts, setFavoriteProducts] = useState([]);
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
-  const navigate = useNavigate(); // Hook for navigation
-  const isLoggedIn = !!token && !!user; // Check if the user is logged in
+  const navigate = useNavigate();
+  const isLoggedIn = !!token && !!user;
 
   const fetchFavoriteProducts = useCallback(async () => {
     try {
@@ -22,12 +22,12 @@ export default function Favorites() {
         }
       );
 
-      setFavoriteProducts(response.data.favorite_products); // Update state with fetched products
+      setFavoriteProducts(response.data.favorite_products);
     } catch (error) {
       console.error("Error fetching favorite products:", error);
       toast.error("Failed to fetch favorite products.");
     }
-  }, [token, user]);
+  }, [token]);
 
   useEffect(() => {
     if (user && token) {
@@ -53,7 +53,7 @@ export default function Favorites() {
       );
 
       toast.success(response.data.message);
-      fetchFavoriteProducts(); // Fetch updated favorite products list
+      fetchFavoriteProducts();
     } catch (error) {
       console.error("Error toggling favorite status:", error);
       toast.error("Failed to update favorite status.");
@@ -62,15 +62,18 @@ export default function Favorites() {
 
   const removeAllFavorites = async () => {
     try {
-      const response = await axios.delete(`http://127.0.0.1:8000/api/favorite`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/vnd.api+json",
-        },
-      });
-      console.log("Response from API:", response.data); // Log the response data
+      const response = await axios.delete(
+        `http://127.0.0.1:8000/api/favorite`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.api+json",
+          },
+        }
+      );
+      console.log("Response from API:", response.data);
       toast.success("All favorite products removed successfully.");
-      setFavoriteProducts([]); // Clear the favorite products list
+      setFavoriteProducts([]);
     } catch (error) {
       console.error("Error removing all favorite products:", error);
       toast.error("Failed to remove all favorite products.");
@@ -104,7 +107,6 @@ export default function Favorites() {
     }
 
     try {
-      // Step 1: Create Order to get order_id
       const createOrderResponse = await axios.post(
         "http://127.0.0.1:8000/api/order/create",
         {
@@ -120,7 +122,6 @@ export default function Favorites() {
 
       const orderId = createOrderResponse.data.order_id;
 
-      // Step 2: Add product to the created order
       await axios.post(
         "http://127.0.0.1:8000/api/orderdetails/create",
         {
