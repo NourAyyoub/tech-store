@@ -41,6 +41,33 @@ export default function UsersList() {
     setFilteredUsers(filtered);
   }, [searchTerm, users]);
 
+  const handleDelete = async (email) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      try {
+        const response = await axios.delete(
+          `http://127.0.0.1:8000/api/user/deleteuser/${email}`,
+          {
+            headers: {
+              Accept: "application/vnd.api+json",
+            },
+          }
+        );
+        if (response.data.status) {
+          alert("User deleted successfully");
+          setUsers(users.filter((user) => user.email !== email));
+          setFilteredUsers(
+            filteredUsers.filter((user) => user.email !== email)
+          );
+        } else {
+          alert("Error deleting user");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Error deleting user");
+      }
+    }
+  };
+
   return (
     <div className="max-w-container mx-auto px-4">
       {error && (
@@ -51,7 +78,6 @@ export default function UsersList() {
 
       {filteredUsers.length > 0 ? (
         <>
-          {" "}
           <div className="mb-6 flex items-center">
             <input
               type="text"
@@ -62,7 +88,7 @@ export default function UsersList() {
             />
           </div>
           <div className="pb-20">
-            <div className="w-full h-20 bg-[#F5F7F7] text-primeColor hidden lgl:grid grid-cols-6 place-content-center px-6 text-lg font-titleFont font-semibold">
+            <div className="w-full h-20 bg-[#F5F7F7] text-primeColor hidden lgl:grid grid-cols-7 place-content-center px-6 text-lg font-titleFont font-semibold">
               <h2 className="flex justify-center items-center col-span-1">
                 ID
               </h2>
@@ -81,12 +107,15 @@ export default function UsersList() {
               <h2 className="flex justify-center items-center col-span-1">
                 Status
               </h2>
+              <h2 className="flex justify-center items-center col-span-1">
+                Actions
+              </h2>
             </div>
             <div className="mt-5">
               {filteredUsers.map((user) => (
                 <div
                   key={user.id}
-                  className="w-full grid grid-cols-6 mb-4 border border-gray-300 rounded-lg shadow-sm py-4 px-6 bg-white"
+                  className="w-full grid grid-cols-7 mb-4 border border-gray-300 rounded-lg shadow-sm py-4 px-6 bg-white"
                 >
                   <div className="flex justify-center items-center col-span-1">
                     {user.id}
@@ -105,6 +134,14 @@ export default function UsersList() {
                   </div>
                   <div className="flex justify-center items-center col-span-1">
                     {user.status}
+                  </div>
+                  <div className="flex justify-center items-center col-span-1">
+                    <button
+                      onClick={() => handleDelete(user.email)}
+                      className="bg-red-500 text-white px-4 py-2 rounded"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
               ))}
