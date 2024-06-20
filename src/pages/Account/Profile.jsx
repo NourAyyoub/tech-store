@@ -12,7 +12,8 @@ export default function Profile() {
   const [errors, setErrors] = useState({});
   const [successMsg, setSuccessMsg] = useState("");
   const [orderResponse, setOrderResponse] = useState({ data: [] });
-  const [selectedOrderId, setSelectedOrderId] = useState(null); // State to keep track of selected order ID
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -80,6 +81,7 @@ export default function Profile() {
       setUser(response.data.user);
       setSuccessMsg("Profile updated successfully.");
       setErrors({});
+      setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile:", error);
       if (error.response && error.response.data && error.response.data.errors) {
@@ -100,7 +102,7 @@ export default function Profile() {
         return "pending";
       case "2":
         return "shipped";
-        case "3":
+      case "3":
         return "delivered";
       default:
         return "error";
@@ -119,9 +121,24 @@ export default function Profile() {
         <>
           <div className="mb-6">
             <h1 className="text-2xl font-bold mb-6">Profile</h1>
+            <button
+              onClick={() => setIsEditing(!isEditing)}
+              className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              {isEditing ? "Cancel" : "Edit Info"}
+            </button>
           </div>
 
           <form onSubmit={handleUpdateProfile} className="space-y-4">
+            <div className="flex flex-col mb-4">
+              <label className="font-semibold">User ID</label>
+              <input
+                type="text"
+                value={user.id}
+                className="px-4 py-2 border rounded"
+                disabled
+              />
+            </div>
             <div className="flex flex-col mb-4">
               <label className="font-semibold">Name</label>
               <input
@@ -129,6 +146,7 @@ export default function Profile() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="px-4 py-2 border rounded"
+                disabled={!isEditing}
               />
               {errors.name && (
                 <p className="text-red-500">{errors.name.join(", ")}</p>
@@ -141,6 +159,7 @@ export default function Profile() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="px-4 py-2 border rounded"
+                disabled={!isEditing}
               />
               {errors.email && (
                 <p className="text-red-500">{errors.email.join(", ")}</p>
@@ -153,6 +172,7 @@ export default function Profile() {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 className="px-4 py-2 border rounded"
+                disabled={!isEditing}
               />
               {errors.phone_number && (
                 <p className="text-red-500">{errors.phone_number.join(", ")}</p>
@@ -165,20 +185,23 @@ export default function Profile() {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 className="px-4 py-2 border rounded"
+                disabled={!isEditing}
               />
               {errors.address && (
                 <p className="text-red-500">{errors.address.join(", ")}</p>
               )}
             </div>
-            <button
-              type="submit"
-              className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Update Profile
-            </button>
+            {isEditing && (
+              <button
+                type="submit"
+                className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Save Changes
+              </button>
+            )}
           </form>
 
-          {orderResponse.data.length > 0 && (
+          {orderResponse.data.length > 0 ? (
             <div className="mt-8">
               <h2 className="text-xl font-semibold mb-4">Orders</h2>
               <div className="w-full bg-gray-100 overflow-x-auto">
@@ -202,19 +225,29 @@ export default function Profile() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {orderResponse.data.map((order) => (
                       <tr key={order.id}>
-                        <td className="px-6 py-4 whitespace-nowrap">{order.order_date}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{getStatusText(order.status)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{order.delivery_address}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {order.order_date}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {getStatusText(order.status)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {order.delivery_address}
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
                           <button
                             onClick={() => toggleOrderDetails(order.id)}
                             className="text-blue-600 hover:text-blue-900"
                           >
-                            {selectedOrderId === order.id ? "Hide Details" : "Show Details"}
+                            {selectedOrderId === order.id
+                              ? "Hide Details"
+                              : "Show Details"}
                           </button>
                           {selectedOrderId === order.id && (
                             <div className="mt-4 px-4 py-2 bg-gray-200">
-                              <h3 className="font-semibold mb-2">Order Details</h3>
+                              <h3 className="font-semibold mb-2">
+                                Order Details
+                              </h3>
                               <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                   <tr>
@@ -235,18 +268,35 @@ export default function Profile() {
                                 <tbody className="bg-white divide-y divide-gray-200">
                                   {order.order_details.map((detail, index) => (
                                     <tr key={index}>
-                                      <td className="px-6 py-4 whitespace-nowrap">{detail.product.name}</td>
-                                      <td className="px-6 py-4 whitespace-nowrap">{detail.quantity}</td>
-                                      <td className="px-6 py-4 whitespace-nowrap">{detail.product.price}</td>
-                                      <td className="px-6 py-4 whitespace-nowrap">{detail.product.price * detail.quantity}</td>
+                                      <td className="px-6 py-4 whitespace-nowrap">
+                                        {detail.product.name}
+                                      </td>
+                                      <td className="px-6 py-4 whitespace-nowrap">
+                                        {detail.quantity}
+                                      </td>
+                                      <td className="px-6 py-4 whitespace-nowrap">
+                                        {detail.product.price}
+                                      </td>
+                                      <td className="px-6 py-4 whitespace-nowrap">
+                                        {detail.product.price * detail.quantity}
+                                      </td>
                                     </tr>
                                   ))}
                                   <tr className="bg-gray-100">
-                                    <td className="px-6 py-4 whitespace-nowrap font-semibold" colSpan="3">
+                                    <td
+                                      className="px-6 py-4 whitespace-nowrap font-semibold"
+                                      colSpan="3"
+                                    >
                                       Total Price:
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap font-semibold">
-                                      {order.order_details.reduce((total, detail) => total + (detail.product.price * detail.quantity), 0)}
+                                      {order.order_details.reduce(
+                                        (total, detail) =>
+                                          total +
+                                          detail.product.price *
+                                            detail.quantity,
+                                        0
+                                      )}
                                     </td>
                                   </tr>
                                 </tbody>
@@ -259,6 +309,10 @@ export default function Profile() {
                   </tbody>
                 </table>
               </div>
+            </div>
+          ) : (
+            <div className="mt-8 text-center text-gray-500">
+              <p>No orders found.</p>
             </div>
           )}
         </>
