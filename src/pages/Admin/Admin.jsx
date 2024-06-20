@@ -5,7 +5,7 @@ import DeleteUserForm from "./AdminMnu/DeleteUserForm";
 import EditProductForm from "./AdminMnu/EditProductForm";
 import OrdersList from "./AdminMnu/OrdersList";
 import DeleteProductForm from "./AdminMnu/DeleteProductForm";
-import UsersList from "./AdminMnu/UsersList"; // استيراد المكون الجديد
+import UsersList from "./AdminMnu/UsersList";
 
 export default function Admin() {
   const [currentForm, setCurrentForm] = useState("viewOrders");
@@ -25,7 +25,6 @@ export default function Admin() {
         {currentForm === "editProduct" && <EditProductForm />}
         {currentForm === "deleteProduct" && <DeleteProductForm />}
         {currentForm === "viewUsers" && <UsersList />}{" "}
-        {/* إضافة الخيار الجديد */}
       </div>
     </div>
   );

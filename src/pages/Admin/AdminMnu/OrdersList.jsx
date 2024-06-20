@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import OrderDetails from "./OrderDetails";
 
 export default function OrdersList() {
   const [orders, setOrders] = useState([]);
@@ -55,26 +54,34 @@ export default function OrdersList() {
       );
     }
     if (searchStatus) {
-      filtered = filtered.filter((order) =>
-        order.status.toString() === searchStatus
+      filtered = filtered.filter(
+        (order) => order.status.toString() === searchStatus
       );
     }
     if (searchAddress) {
       filtered = filtered.filter((order) =>
-        order.delivery_address.toLowerCase().includes(searchAddress.toLowerCase())
+        order.delivery_address
+          .toLowerCase()
+          .includes(searchAddress.toLowerCase())
       );
     }
 
     if (sortBy === "status") {
       filtered.sort((a, b) => a.status.localeCompare(b.status));
     } else if (sortBy === "date") {
-      filtered.sort(
-        (a, b) => new Date(a.order_date) - new Date(b.order_date)
-      );
+      filtered.sort((a, b) => new Date(a.order_date) - new Date(b.order_date));
     }
 
     setFilteredOrders(filtered);
-  }, [orders, searchId, searchName, searchDate, searchStatus, searchAddress, sortBy]);
+  }, [
+    orders,
+    searchId,
+    searchName,
+    searchDate,
+    searchStatus,
+    searchAddress,
+    sortBy,
+  ]);
 
   const updateOrderStatus = async (orderId, status) => {
     setError(null);
