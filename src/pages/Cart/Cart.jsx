@@ -37,10 +37,10 @@ export default function Cart() {
   }, [token]);
 
   useEffect(() => {
-    if (user && token) {
+    if (user) {
       fetchCartDetails();
     }
-  }, [user, token, fetchCartDetails]);
+  }, [user, fetchCartDetails]);
   useEffect(() => {
     if (totalAmt <= 200) {
       setShippingCharge(30);
