@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -11,6 +11,13 @@ export default function Cart() {
   const [shippingAddress, setShippingAddress] = useState("");
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user || !token) {
+      navigate("/signin");
+    }
+  }, [user, token, navigate]);
 
   const fetchCartDetails = useCallback(async () => {
     try {
@@ -35,10 +42,11 @@ export default function Cart() {
   }, [token]);
 
   useEffect(() => {
-    if (user) {
+    if (user && token) {
       fetchCartDetails();
     }
-  }, [user, fetchCartDetails]);
+  }, [user, token, fetchCartDetails]);
+
   useEffect(() => {
     if (totalAmt <= 200) {
       setShippingCharge(30);
@@ -198,7 +206,11 @@ export default function Cart() {
                     <div className="w-full text-center">
                       <button
                         onClick={() =>
-                          updateProductQuantity(cart.id, item.product.id, -1)
+                          updateProductQuantity(
+                            cart.id,
+                            item.product.id,
+                            item.quantity - 1
+                          )
                         }
                         className="py-1 px-3 bg-red-500 text-white font-semibold uppercase hover:bg-red-700 duration-300 mr-2"
                       >
@@ -207,7 +219,11 @@ export default function Cart() {
                       {item.quantity}
                       <button
                         onClick={() =>
-                          updateProductQuantity(cart.id, item.product.id, 1)
+                          updateProductQuantity(
+                            cart.id,
+                            item.product.id,
+                            item.quantity + 1
+                          )
                         }
                         className="py-1 px-3 bg-green-500 text-white font-semibold uppercase hover:bg-green-700 duration-300 ml-2"
                       >
