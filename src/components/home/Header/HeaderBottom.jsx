@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaSearch, FaUser, FaCaretDown, FaShoppingCart } from "react-icons/fa";
 import { BsSuitHeartFill } from "react-icons/bs";
@@ -8,10 +8,8 @@ import { fetchProducts } from "../../../assets/Api/fetchProducts";
 import { toast } from "react-toastify";
 
 export default function HeaderBottom() {
-  const [show, setShow] = useState(false);
   const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
-  const ref = useRef();
   const token = localStorage.getItem("token");
   const [isLoggedIn, setIsLoggedIn] = useState(!!token);
   const [products, setProducts] = useState([]);
@@ -30,16 +28,6 @@ export default function HeaderBottom() {
 
     fetchAllProducts();
   }, []);
-
-  useEffect(() => {
-    document.body.addEventListener("click", (e) => {
-      if (ref.current.contains(e.target)) {
-        setShow(true);
-      } else {
-        setShow(false);
-      }
-    });
-  }, [show, ref]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
