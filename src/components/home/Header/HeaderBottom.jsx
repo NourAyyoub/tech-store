@@ -4,13 +4,10 @@ import { FaSearch, FaUser, FaCaretDown, FaShoppingCart } from "react-icons/fa";
 import { BsSuitHeartFill } from "react-icons/bs";
 import Flex from "../../designLayouts/Flex";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { fetchProducts } from "../../../assets/Api/fetchProducts";
 import { toast } from "react-toastify";
 
-
 export default function HeaderBottom() {
-  const productsInCart = useSelector((state) => state.Reducer.products);
   const [show, setShow] = useState(false);
   const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
@@ -115,10 +112,10 @@ export default function HeaderBottom() {
                         {item.name}
                       </p>
                       <p className="text-xs text-gray-600">
-  {item.description.length > 100
-    ? `${item.description.slice(0, 100)}...`
-    : item.description}
-</p>
+                        {item.description.length > 100
+                          ? `${item.description.slice(0, 100)}...`
+                          : item.description}
+                      </p>
 
                       <p className="text-sm text-gray-800">
                         Price:{" "}

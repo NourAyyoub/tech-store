@@ -10,7 +10,6 @@ export default function Profile() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
   const [errors, setErrors] = useState({});
-  const [successMsg, setSuccessMsg] = useState("");
   const [orderResponse, setOrderResponse] = useState({ data: [] });
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -53,7 +52,6 @@ export default function Profile() {
         );
 
         setOrderResponse(orderResponse);
-        console.log("User Order:", orderResponse.data);
       } catch (error) {
         console.error("Error fetching user or order:", error);
       }
@@ -79,7 +77,6 @@ export default function Profile() {
       );
 
       setUser(response.data.user);
-      setSuccessMsg("Profile updated successfully.");
       setErrors({});
       setIsEditing(false);
     } catch (error) {

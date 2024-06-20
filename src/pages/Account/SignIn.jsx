@@ -8,7 +8,6 @@ export default function SignIn() {
   const [errEmail, setErrEmail] = useState("");
   const [errPassword, setErrPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
 
   const navigate = useNavigate();
 
@@ -57,7 +56,7 @@ export default function SignIn() {
           localStorage.setItem("user", JSON.stringify(user));
 
           // Directly navigate to the home page after successful login
-          navigate("/"); 
+          navigate("/");
         }
       } catch (error) {
         if (error.response) {
