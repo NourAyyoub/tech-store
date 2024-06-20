@@ -12,7 +12,6 @@ export default function Cart() {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // Function to fetch cart details
   const fetchCartDetails = useCallback(async () => {
     try {
       const response = await axios.get("http://127.0.0.1:8000/api/order/cart", {
@@ -25,13 +24,11 @@ export default function Cart() {
       const cartData = response.data;
       setCart(cartData);
 
-      // Calculate total amount
       const total = cartData.order_details.reduce((acc, item) => {
         return acc + item.product.price * item.quantity;
       }, 0);
       setTotalAmt(total);
 
-      // Print cart data to the console
       console.log(cartData);
     } catch (error) {
       console.error("Failed to fetch cart details", error);
@@ -39,14 +36,11 @@ export default function Cart() {
     }
   }, [token]);
 
-  // Effect to fetch cart details when user and token are available
   useEffect(() => {
     if (user && token) {
       fetchCartDetails();
     }
   }, [user, token, fetchCartDetails]);
-
-  // Effect to calculate shipping charge based on total amount
   useEffect(() => {
     if (totalAmt <= 200) {
       setShippingCharge(30);
@@ -57,12 +51,10 @@ export default function Cart() {
     }
   }, [totalAmt]);
 
-  // Handler for address change input
   const handleAddressChange = (e) => {
     setShippingAddress(e.target.value);
   };
 
-  // Handler to confirm the order
   const handleOrderConfirmation = async (orderId) => {
     if (!shippingAddress) {
       toast.error("Shipping address cannot be empty.");
@@ -70,7 +62,6 @@ export default function Cart() {
     }
 
     try {
-      // Confirm the order
       await axios.put(
         `http://127.0.0.1:8000/api/order/confirm/${orderId}`,
         { delivery_address: shippingAddress },
@@ -82,7 +73,6 @@ export default function Cart() {
         }
       );
 
-      // Update the request count and quantity for each product in the order
       for (const item of cart.order_details) {
         await axios.put(
           `http://127.0.0.1:8000/api/product/updaterequestcount/${item.product.id}`,
@@ -114,7 +104,6 @@ export default function Cart() {
     }
   };
 
-  // Handler to update product quantity
   const updateProductQuantity = async (orderId, productId, quantity) => {
     try {
       await axios.put(
@@ -130,14 +119,13 @@ export default function Cart() {
         }
       );
       toast.success("Product quantity updated successfully.");
-      fetchCartDetails(); // Fetch updated cart details after update
+      fetchCartDetails();
     } catch (error) {
       console.error("Error updating product quantity:", error);
       toast.error("Failed to update product quantity.");
     }
   };
 
-  // Handler to delete all products from cart
   const deleteAllProductsFromCart = async () => {
     try {
       await axios.delete("http://127.0.0.1:8000/api/cart", {
@@ -156,7 +144,6 @@ export default function Cart() {
     }
   };
 
-  // Handler to delete a product from the order
   const deleteProductFromOrder = async (orderId, productId) => {
     try {
       await axios.delete(
@@ -169,7 +156,7 @@ export default function Cart() {
         }
       );
       toast.success("Product deleted from the order successfully.");
-      fetchCartDetails(); // Fetch updated cart details after deletion
+      fetchCartDetails();
     } catch (error) {
       console.error("Error deleting product from order:", error);
       toast.error("Failed to delete product from the order.");
@@ -178,12 +165,10 @@ export default function Cart() {
 
   return (
     <div className="max-w-container mx-auto px-4">
-      {/* Render based on whether cart has items */}
       {cart && cart.order_details && cart.order_details.length > 0 ? (
         <div className="pb-20">
           {!isCheckout ? (
             <>
-              {/* Render cart items */}
               <div className="w-full h-20 bg-[#F5F7F7] text-primeColor hidden lgl:grid grid-cols-6 place-content-center px-6 text-lg font-titleFont font-semibold">
                 <h2 className="col-span-2">Product</h2>
                 <h2>Price</h2>
@@ -218,7 +203,7 @@ export default function Cart() {
                           updateProductQuantity(
                             cart.id,
                             item.product.id,
-                            item.quantity - 1 // Decrease quantity
+                            item.quantity - 1
                           )
                         }
                         className="py-1 px-3 bg-red-500 text-white font-semibold uppercase hover:bg-red-700 duration-300 mr-2"
@@ -231,7 +216,7 @@ export default function Cart() {
                           updateProductQuantity(
                             cart.id,
                             item.product.id,
-                            item.quantity + 1 // Increase quantity
+                            item.quantity + 1
                           )
                         }
                         className="py-1 px-3 bg-green-500 text-white font-semibold uppercase hover:bg-green-700 duration-300 ml-2"
@@ -256,7 +241,6 @@ export default function Cart() {
                 ))}
               </div>
 
-              {/* Actions for the cart */}
               <div className="flex gap-4 mt-8">
                 <button
                   onClick={deleteAllProductsFromCart}
@@ -266,7 +250,6 @@ export default function Cart() {
                 </button>
               </div>
 
-              {/* Cart totals */}
               <div className="max-w-7xl flex justify-end mt-4">
                 <div className="w-96 flex flex-col gap-4">
                   <h1 className="text-2xl font-semibold text-right">
@@ -304,7 +287,6 @@ export default function Cart() {
               </div>
             </>
           ) : (
-            // Checkout form
             <div className="bg-[#F5F7F7] p-6 rounded-lg shadow-lg">
               <h2 className="text-2xl font-semibold mb-4">
                 Confirm Your Order
@@ -335,7 +317,6 @@ export default function Cart() {
           )}
         </div>
       ) : (
-        // Empty cart message
         <div className="max-w-[500px] p-6 py-10 bg-white flex flex-col items-center rounded-md mx-auto mt-20">
           <h1 className="font-titleFont text-xl font-bold uppercase">
             Your Cart is empty!

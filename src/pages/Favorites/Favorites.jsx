@@ -1,12 +1,13 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export default function Favorites() {
   const [favoriteProducts, setFavoriteProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = useMemo(() => JSON.parse(localStorage.getItem("user")), []);
   const navigate = useNavigate();
   const isLoggedIn = !!token && !!user;
 
@@ -26,6 +27,8 @@ export default function Favorites() {
     } catch (error) {
       console.error("Error fetching favorite products:", error);
       toast.error("Failed to fetch favorite products.");
+    } finally {
+      setLoading(false);
     }
   }, [token]);
 
@@ -35,32 +38,35 @@ export default function Favorites() {
     }
   }, [user, token, fetchFavoriteProducts]);
 
-  const toggleFavoriteStatus = async (productId) => {
-    try {
-      const formData = new FormData();
-      formData.append("customer_id", user.id);
-      formData.append("product_id", productId);
+  const toggleFavoriteStatus = useCallback(
+    async (productId) => {
+      try {
+        const formData = new FormData();
+        formData.append("customer_id", user.id);
+        formData.append("product_id", productId);
 
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/user/favorite",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/vnd.api+json",
-          },
-        }
-      );
+        const response = await axios.post(
+          "http://127.0.0.1:8000/api/user/favorite",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/vnd.api+json",
+            },
+          }
+        );
 
-      toast.success(response.data.message);
-      fetchFavoriteProducts();
-    } catch (error) {
-      console.error("Error toggling favorite status:", error);
-      toast.error("Failed to update favorite status.");
-    }
-  };
+        toast.success(response.data.message);
+        fetchFavoriteProducts();
+      } catch (error) {
+        console.error("Error toggling favorite status:", error);
+        toast.error("Failed to update favorite status.");
+      }
+    },
+    [user.id, token, fetchFavoriteProducts]
+  );
 
-  const removeAllFavorites = async () => {
+  const removeAllFavorites = useCallback(async () => {
     try {
       const response = await axios.delete(
         `http://127.0.0.1:8000/api/favorite`,
@@ -78,9 +84,9 @@ export default function Favorites() {
       console.error("Error removing all favorite products:", error);
       toast.error("Failed to remove all favorite products.");
     }
-  };
+  }, [token]);
 
-  const addAllToCart = async () => {
+  const addAllToCart = useCallback(async () => {
     try {
       await axios.post(
         "http://127.0.0.1:8000/api/favorite/cart",
@@ -97,52 +103,59 @@ export default function Favorites() {
       console.error("Error adding all favorite products to cart:", error);
       toast.error("Failed to add all favorite products to cart.");
     }
-  };
+  }, [token]);
 
-  const handleAddToCart = async (productInfo) => {
-    if (!isLoggedIn) {
-      toast.error("Please log in to add items to your cart");
-      navigate("/signin");
-      return;
-    }
+  const handleAddToCart = useCallback(
+    async (productInfo) => {
+      if (!isLoggedIn) {
+        toast.error("Please log in to add items to your cart");
+        navigate("/signin");
+        return;
+      }
 
-    try {
-      const createOrderResponse = await axios.post(
-        "http://127.0.0.1:8000/api/order/create",
-        {
-          // Add other necessary order details if required
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/vnd.api+json",
+      try {
+        const createOrderResponse = await axios.post(
+          "http://127.0.0.1:8000/api/order/create",
+          {
+            // Add other necessary order details if required
           },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/vnd.api+json",
+            },
+          }
+        );
 
-      const orderId = createOrderResponse.data.order_id;
+        const orderId = createOrderResponse.data.order_id;
 
-      await axios.post(
-        "http://127.0.0.1:8000/api/orderdetails/create",
-        {
-          order_id: orderId,
-          product_id: productInfo.id,
-          quantity: 1,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/vnd.api+json",
+        await axios.post(
+          "http://127.0.0.1:8000/api/orderdetails/create",
+          {
+            order_id: orderId,
+            product_id: productInfo.id,
+            quantity: 1,
           },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/vnd.api+json",
+            },
+          }
+        );
 
-      toast.success("Product added to cart");
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      toast.error("Failed to add product to cart.");
-    }
-  };
+        toast.success("Product added to cart");
+      } catch (error) {
+        console.error("Error adding to cart:", error);
+        toast.error("Failed to add product to cart.");
+      }
+    },
+    [isLoggedIn, navigate, token]
+  );
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="max-w-container mx-auto px-4">
