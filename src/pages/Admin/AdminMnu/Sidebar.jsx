@@ -4,7 +4,6 @@ export default function Sidebar({ currentForm, onShowForm }) {
   const menuItems = [
     { name: "viewOrders", label: "View Orders" },
     { name: "addProduct", label: "Add Product" },
-    { name: "deleteUser", label: "Delete User" },
     { name: "editProduct", label: "Edit Product" },
     { name: "deleteProduct", label: "Delete Product" },
     { name: "viewUsers", label: "View Users" }, // إضافة الزر الجديد

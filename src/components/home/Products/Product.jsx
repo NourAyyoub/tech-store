@@ -6,26 +6,22 @@ import Image from "../../designLayouts/Image";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import PropTypes from "prop-types";
-
-Product.propTypes = {
-  productName: PropTypes.string.isRequired,
-  img: PropTypes.string.isRequired,
-  _id: PropTypes.string.isRequired,
-  badge: PropTypes.bool,
-  price: PropTypes.string.isRequired,
-};
 
 export default function Product(productInfo) {
   const [wishList, setWishList] = useState([]);
   const navigate = useNavigate();
   const productItem = productInfo;
 
+  console.log(productItem);
+
+  
+
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   const isLoggedIn = !!token;
 
   const handleProductDetails = () => {
+    console.log("product iteam from handleProductDetails" + "  " +  productItem.img);
     navigate(`/product/${productItem._id}`, {
       state: {
         item: productItem,
@@ -43,7 +39,7 @@ export default function Product(productInfo) {
     try {
       const formData = new FormData();
       formData.append("customer_id", user.id);
-      formData.append("product_id", productInfo._id);
+      formData.append("product_id", productInfo.id);
 
       const response = await axios.post(
         "http://127.0.0.1:8000/api/user/favorite",
@@ -95,7 +91,7 @@ export default function Product(productInfo) {
         "http://127.0.0.1:8000/api/orderdetails/create",
         {
           order_id: orderId,
-          product_id: productInfo._id,
+          product_id: productInfo.id,
           quantity: 1,
         },
         {
@@ -108,7 +104,7 @@ export default function Product(productInfo) {
 
       toast.success("Product added to cart");
     } catch (error) {
-      console.error("Error adding to cart:", error);
+      // console.error("Error adding to cart:", error);
       toast.error("Failed to add product to cart.");
     }
   };
@@ -119,7 +115,7 @@ export default function Product(productInfo) {
         <div onClick={handleProductDetails} className="cursor-pointer">
           <Image
             className="w-full h-full object-cover"
-            imgSrc={productInfo.img}
+            imgSrc={productInfo.image_url}
           />
         </div>
         <div className="w-full h-32 absolute bg-white -bottom-[130px] group-hover:bottom-0 duration-700 p-2 rounded-b-lg flex flex-col items-end justify-center">
@@ -149,7 +145,8 @@ export default function Product(productInfo) {
       <div className="max-w-80 py-6 flex flex-col gap-1 border-[1px] border-t-0 px-4 rounded-b-lg bg-white">
         <div className="flex items-center justify-between font-titleFont">
           <h2 className="text-lg text-primeColor font-bold">
-            {productInfo.productName}
+            {productInfo.name}
+            {/* {productInfo.description} */}
           </h2>
           <p className="text-[#767676] text-[14px]">₪{productInfo.price}</p>
         </div>

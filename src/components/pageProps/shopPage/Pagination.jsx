@@ -16,12 +16,12 @@ function Items({ currentItems }) {
         currentItems.map((item) => (
           <div key={item._id} className="w-full">
             <Product
-              _id={item.id}
-              img={item.image_url}
-              productName={item.name}
+              id={item.id}
+              image_url={item.image_url}
+              name={item.name}
               price={item.price}
               category={item.category}
-              des={item.description}
+              description={item.description}
               brand={item.manufacturer_name}
               number_of_times_requested={item.number_of_times_requested}
               remaining_quantity={item.remaining_quantity}

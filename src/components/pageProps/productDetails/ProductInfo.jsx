@@ -16,11 +16,11 @@ export default function ProductInfo({ productInfo }) {
   console.log("Product Info:", productInfo);
 
   const renderDescription = () => {
-    if (!productInfo.des) {
+    if (!productInfo.description) {
       return null;
     }
 
-    const description = productInfo.des.split(/:(.*?)-/).map((part, index) => {
+    const description = productInfo.description.split(/:(.*?)-/).map((part, index) => {
       return (
         <span key={index} style={index % 2 === 1 ? highlightStyle : {}}>
           {part}
@@ -69,7 +69,7 @@ export default function ProductInfo({ productInfo }) {
         "http://127.0.0.1:8000/api/orderdetails/create",
         {
           order_id: orderId,
-          product_id: productInfo._id,
+          product_id: productInfo.id,
           quantity: 1,
         },
         {
@@ -123,15 +123,15 @@ export default function ProductInfo({ productInfo }) {
 
   return (
     <div className="flex flex-col gap-5 p-4 overflow-hidden">
-      <h2 className="text-4xl font-semibold">{productInfo.productName}</h2>
+      <h2 className="text-4xl font-semibold">{productInfo.name}</h2>
       <p className="text-2xl font-semibold">{productInfo.price}₪</p>
       <hr />
-      <p className="text-base text-gray-600">{renderDescription()}</p>
-      <p className="text-base text-green-600 font-medium">En Stock</p>
+      <p className="text-base text-gray-600">description : {renderDescription()}</p>
+      <p className="text-base text-green-600 font-medium">remaining quantity : {productInfo.remaining_quantity}</p>
       <button
         onClick={handleAddToCart}
-        className="w-full py-4 bg-blue-500 hover:bg-blue-600 duration-300 text-white text-lg font-titleFont"
-        disabled={loading}
+        className={`w-full py-4 ${productInfo.remaining_quantity === 0 ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'} duration-300 text-white text-lg font-titleFont`}
+        disabled={loading || productInfo.remaining_quantity === 0}
       >
         {loading ? "Adding..." : "Add to Cart"}
       </button>
@@ -143,5 +143,6 @@ export default function ProductInfo({ productInfo }) {
       </button>
       {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
+
   );
 }

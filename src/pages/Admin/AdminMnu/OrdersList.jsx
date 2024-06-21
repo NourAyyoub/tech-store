@@ -10,6 +10,7 @@ export default function OrdersList() {
   const [searchDate, setSearchDate] = useState("");
   const [searchStatus, setSearchStatus] = useState("");
   const [searchAddress, setSearchAddress] = useState("");
+  const [searchCustomerId, setSearchCustomerId] = useState(""); // New state for customer_id
   const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   useEffect(() => {
@@ -64,9 +65,22 @@ export default function OrdersList() {
           .includes(searchAddress.toLowerCase())
       );
     }
+    if (searchCustomerId) {
+      filtered = filtered.filter((order) =>
+        order.customer_id.toString().includes(searchCustomerId)
+      );
+    }
 
     setFilteredOrders(filtered);
-  }, [orders, searchId, searchName, searchDate, searchStatus, searchAddress]);
+  }, [
+    orders,
+    searchId,
+    searchName,
+    searchDate,
+    searchStatus,
+    searchAddress,
+    searchCustomerId, // Include customer_id in the dependencies
+  ]);
 
   const updateOrderStatus = async (orderId, status) => {
     setError(null);
@@ -194,6 +208,13 @@ export default function OrdersList() {
           placeholder="Filter by Address"
           value={searchAddress}
           onChange={(e) => setSearchAddress(e.target.value)}
+          className="mb-2 md:mb-0 px-4 py-2 border rounded"
+        />
+        <input
+          type="text"
+          placeholder="Filter by Customer ID" // New input field for customer_id
+          value={searchCustomerId}
+          onChange={(e) => setSearchCustomerId(e.target.value)}
           className="mb-2 md:mb-0 px-4 py-2 border rounded"
         />
       </div>

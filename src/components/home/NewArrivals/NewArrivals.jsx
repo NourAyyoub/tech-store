@@ -29,13 +29,12 @@ export default function NewArrivals() {
           products.map((product) => (
             <Product
               key={product.id}
-              _id={product.id.toString()}
-              img={product.image_url}
-              productName={product.name}
+              id={product.id}
+              image_url={product.image_url}
+              name={product.name}
               price={product.price.toFixed(2)}
-              color={product.category}
-              badge={product.number_of_times_requested > 0}
-              des={product.description}
+              description={product.description}
+              remaining_quantity={product.remaining_quantity}
             />
           ))
         )}

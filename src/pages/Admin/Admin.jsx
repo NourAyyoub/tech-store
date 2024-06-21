@@ -21,7 +21,6 @@ export default function Admin() {
         <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
         {currentForm === "viewOrders" && <OrdersList />}
         {currentForm === "addProduct" && <AddProductForm />}
-        {currentForm === "deleteUser" && <DeleteUserForm />}
         {currentForm === "editProduct" && <EditProductForm />}
         {currentForm === "deleteProduct" && <DeleteProductForm />}
         {currentForm === "viewUsers" && <UsersList />}{" "}
