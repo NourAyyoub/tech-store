@@ -1,8 +1,9 @@
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
 import Product from "../../home/Products/Product";
 import { fetchProducts } from "../../../assets/Api/fetchProducts";
+import ErrorMessage from "../../Message/ErrorMessage";
 import PropTypes from "prop-types";
 
 Items.propTypes = {
@@ -63,7 +64,6 @@ export default function Pagination() {
     getProducts();
   }, []);
 
-  // Filter items based on selected brands and categories
   const filteredItems = useMemo(() => {
     return products.filter((item) => {
       const isBrandSelected =
@@ -97,31 +97,35 @@ export default function Pagination() {
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 mdl:gap-4 lg:gap-10">
-        {error && <div className="text-red-500">{error}</div>}
-        <Items currentItems={currentItems} />
-      </div>
-      <div className="flex flex-col mdl:flex-row justify-center mdl:justify-between items-center py-10">
-        <ReactPaginate
-          nextLabel="Next"
-          previousLabel="Prev"
-          onPageChange={handlePageClick}
-          pageRangeDisplayed={3}
-          marginPagesDisplayed={2}
-          pageCount={pageCount}
-          pageClassName="mr-2"
-          containerClassName="flex text-base font-semibold font-titleFont"
-          pageLinkClassName="w-9 h-9 border border-gray-300 flex justify-center items-center rounded-md hover:bg-gray-200"
-          activeClassName="bg-black text-white"
-          activeLinkClassName="bg-black text-white"
-          previousClassName="mr-2"
-          nextClassName="ml-2"
-        />
-        <p className="text-base font-normal text-gray-600 mt-4 mdl:mt-0">
-          Products from {itemStart} to{" "}
-          {Math.min(endOffset, filteredItems.length)} of {filteredItems.length}
-        </p>
-      </div>
+      {error ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 mdl:gap-4 lg:gap-10">
+          <ErrorMessage message={error} />
+          <Items currentItems={currentItems} />
+        </div>
+      ) : (
+        <div className="flex flex-col mdl:flex-row justify-center mdl:justify-between items-center py-10">
+          <ReactPaginate
+            nextLabel="Next"
+            previousLabel="Prev"
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={3}
+            marginPagesDisplayed={2}
+            pageCount={pageCount}
+            pageClassName="mr-2"
+            containerClassName="flex text-base font-semibold font-titleFont"
+            pageLinkClassName="w-9 h-9 border border-gray-300 flex justify-center items-center rounded-md hover:bg-gray-200"
+            activeClassName="bg-black text-white"
+            activeLinkClassName="bg-black text-white"
+            previousClassName="mr-2"
+            nextClassName="ml-2"
+          />
+          <p className="text-base font-normal text-gray-600 mt-4 mdl:mt-0">
+            Products from {itemStart} to{" "}
+            {Math.min(endOffset, filteredItems.length)} of{" "}
+            {filteredItems.length}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

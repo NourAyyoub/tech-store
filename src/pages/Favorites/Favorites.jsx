@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -81,7 +81,6 @@ export default function Favorites() {
           },
         }
       );
-      console.log("Response from API:", response.data);
       toast.success("All favorite products removed successfully.");
       setFavoriteProducts([]);
     } catch (error) {
@@ -120,9 +119,7 @@ export default function Favorites() {
       try {
         const createOrderResponse = await axios.post(
           "http://127.0.0.1:8000/api/order/create",
-          {
-            // Add other necessary order details if required
-          },
+          {},
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -150,7 +147,6 @@ export default function Favorites() {
 
         toast.success("Product added to cart");
       } catch (error) {
-        // console.error("Error adding to cart:", error);
         toast.error("Failed to add product to cart.");
       }
     },

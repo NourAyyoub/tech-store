@@ -67,7 +67,7 @@ export default function HeaderBottom() {
               value={searchQuery}
               placeholder="Search your products here"
             />
-            <FaSearch className="w-5 h-5 text-gray-600 cursor-pointer" />
+            <FaSearch className="w-5 h-5 text-black cursor-pointer" />
             {searchQuery && (
               <div
                 className={`w-full mx-auto h-96 bg-white top-16 absolute left-0 z-50 overflow-y-scroll shadow-2xl scrollbar-hide cursor-pointer rounded-lg mt-2`}
@@ -164,11 +164,11 @@ export default function HeaderBottom() {
             )}
             <Link to="/cart">
               <div className="relative">
-                <FaShoppingCart className="w-5 h-5 text-gray-600 hover:text-primeColor transition-colors duration-300" />
+                <FaShoppingCart className="w-5 h-5 hover:text-green-600 text-primeColor transition-colors duration-300" />
               </div>
             </Link>
             <div onClick={handleFavoritesClick}>
-              <BsSuitHeartFill className="w-5 h-5 text-gray-600 hover:text-primeColor transition-colors duration-300" />
+              <BsSuitHeartFill className="w-5 h-5  hover:text-red-600 text-primeColor transition-colors duration-300" />
             </div>
           </div>
         </Flex>

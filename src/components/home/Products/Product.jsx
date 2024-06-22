@@ -11,17 +11,11 @@ export default function Product(productInfo) {
   const [wishList, setWishList] = useState([]);
   const navigate = useNavigate();
   const productItem = productInfo;
-
-  console.log(productItem);
-
-  
-
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   const isLoggedIn = !!token;
 
   const handleProductDetails = () => {
-    console.log("product iteam from handleProductDetails" + "  " +  productItem.img);
     navigate(`/product/${productItem._id}`, {
       state: {
         item: productItem,
@@ -54,7 +48,6 @@ export default function Product(productInfo) {
 
       toast.success(response.data.message);
       setWishList([...wishList, productInfo]);
-      console.log(wishList);
     } catch (error) {
       console.error("Error adding to wishlist:", error);
       toast.error("Failed to add product to wishlist.");
@@ -104,7 +97,6 @@ export default function Product(productInfo) {
 
       toast.success("Product added to cart");
     } catch (error) {
-      // console.error("Error adding to cart:", error);
       toast.error("Failed to add product to cart.");
     }
   };
@@ -146,7 +138,6 @@ export default function Product(productInfo) {
         <div className="flex items-center justify-between font-titleFont">
           <h2 className="text-lg text-primeColor font-bold">
             {productInfo.name}
-            {/* {productInfo.description} */}
           </h2>
           <p className="text-[#767676] text-[14px]">₪{productInfo.price}</p>
         </div>

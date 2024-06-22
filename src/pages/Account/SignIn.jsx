@@ -55,14 +55,11 @@ export default function SignIn() {
           localStorage.setItem("token", token);
           localStorage.setItem("user", JSON.stringify(user));
           console.log(response.data.user[0].status);
-          if(response.data.user[0].status=="customer")
-          // Directly navigate to the home page after successful login
-          navigate("/");
-          else{
-          navigate("/admin");
+          if (response.data.user[0].status === "customer") navigate("/");
+          else {
+            navigate("/admin");
           }
         }
-
       } catch (error) {
         if (error.response) {
           setErrorMsg("Invalid email or password");

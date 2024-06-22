@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
-import { toast } from "react-toastify"; // تأكد من استيراد مكتبة toast إذا لم تكن مستوردة
+import { toast } from "react-toastify";
 
 ProductInfo.propTypes = {
   productInfo: PropTypes.object,
@@ -13,20 +13,19 @@ export default function ProductInfo({ productInfo }) {
     color: "#d0121a",
     fontWeight: "bold",
   };
-  console.log("Product Info:", productInfo);
-
   const renderDescription = () => {
     if (!productInfo.description) {
       return null;
     }
-
-    const description = productInfo.description.split(/:(.*?)-/).map((part, index) => {
-      return (
-        <span key={index} style={index % 2 === 1 ? highlightStyle : {}}>
-          {part}
-        </span>
-      );
-    });
+    const description = productInfo.description
+      .split(/:(.*?)-/)
+      .map((part, index) => {
+        return (
+          <span key={index} style={index % 2 === 1 ? highlightStyle : {}}>
+            {part}
+          </span>
+        );
+      });
 
     return <>{description}</>;
   };
@@ -47,13 +46,9 @@ export default function ProductInfo({ productInfo }) {
     setError("");
 
     try {
-      // Step 1: Create Order to get order_id
       const createOrderResponse = await axios.post(
         "http://127.0.0.1:8000/api/order/create",
-        {
-          // delivery_address: "nablus",
-          // customer_id: user.id, // Use the user ID from localStorage
-        },
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -63,8 +58,6 @@ export default function ProductInfo({ productInfo }) {
       );
 
       const orderId = createOrderResponse.data.order_id;
-
-      // Step 2: Add product to the created order
       await axios.post(
         "http://127.0.0.1:8000/api/orderdetails/create",
         {
@@ -126,11 +119,25 @@ export default function ProductInfo({ productInfo }) {
       <h2 className="text-4xl font-semibold">{productInfo.name}</h2>
       <p className="text-2xl font-semibold">{productInfo.price}₪</p>
       <hr />
-      <p className="text-base text-gray-600">description : {renderDescription()}</p>
-      <p className="text-base text-green-600 font-medium">remaining quantity : {productInfo.remaining_quantity}</p>
+      <p className="text-base text-gray-600">
+        description : {renderDescription()}
+      </p>
+      <p
+        className={`text-base font-medium ${
+          productInfo.remaining_quantity > 0 ? "text-green-600" : "text-red-600"
+        }`}
+      >
+        {productInfo.remaining_quantity > 0
+          ? `Remaining quantity: ${productInfo.remaining_quantity}`
+          : "Out of Stock"}
+      </p>
       <button
         onClick={handleAddToCart}
-        className={`w-full py-4 ${productInfo.remaining_quantity === 0 ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'} duration-300 text-white text-lg font-titleFont`}
+        className={`w-full py-4 ${
+          productInfo.remaining_quantity === 0
+            ? "bg-gray-400"
+            : "bg-blue-500 hover:bg-blue-600"
+        } duration-300 text-white text-lg font-titleFont`}
         disabled={loading || productInfo.remaining_quantity === 0}
       >
         {loading ? "Adding..." : "Add to Cart"}
@@ -143,6 +150,5 @@ export default function ProductInfo({ productInfo }) {
       </button>
       {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
-
   );
 }

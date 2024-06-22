@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 Flex.propTypes = {
   className: PropTypes.string,
-  children: PropTypes.node, // Accept any renderable content
+  children: PropTypes.node,
 };
 
 export default function Flex({ children, className }) {

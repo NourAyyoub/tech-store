@@ -30,7 +30,6 @@ export default function Payment() {
       );
 
       toast.success("Order confirmed successfully.");
-      console.log("Response:", response.data);
     } catch (error) {
       console.error("Failed to confirm order:", error);
       toast.error("Failed to confirm order.");

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Sidebar from "./AdminMnu/Sidebar";
 import AddProductForm from "./AdminMnu/AddProductForm";
-import DeleteUserForm from "./AdminMnu/DeleteUserForm";
 import EditProductForm from "./AdminMnu/EditProductForm";
 import OrdersList from "./AdminMnu/OrdersList";
 import DeleteProductForm from "./AdminMnu/DeleteProductForm";

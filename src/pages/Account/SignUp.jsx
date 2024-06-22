@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function SignUp() {
-  // Initial State
   const [clientName, setClientName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -11,7 +10,6 @@ export default function SignUp() {
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
 
-  // Error Msg
   const [errClientName, setErrClientName] = useState("");
   const [errEmail, setErrEmail] = useState("");
   const [errPhone, setErrPhone] = useState("");
@@ -21,7 +19,6 @@ export default function SignUp() {
 
   const [successMsg, setSuccessMsg] = useState("");
 
-  // Event Handlers
   const handleName = (e) => {
     setClientName(e.target.value);
     setErrClientName("");
@@ -47,7 +44,6 @@ export default function SignUp() {
     setErrCity("");
   };
 
-  // Email Validation
   const EmailValidation = (email) => {
     return String(email)
       .toLowerCase()
@@ -127,7 +123,7 @@ export default function SignUp() {
             if (errors.email) setErrEmail(errors.email[0]);
             if (errors.phone_number) setErrPhone(errors.phone_number[0]);
           } else {
-            setSuccessMsg(""); // Clear success message if there's an error
+            setSuccessMsg("");
           }
         });
     }

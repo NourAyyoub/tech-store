@@ -37,13 +37,11 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path="/" element={<Layout />}>
-        {/* ==================== Header Navlink Start here =================== */}
         <Route index element={<Home />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/about" element={<About />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/favorites" element={<Favorites />} />{" "}
-        {/* ==================== Header Navlink End here ===================== */}
         <Route path="/product/:_id" element={<ProductDetails />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/paymentgateway" element={<Payment />} />

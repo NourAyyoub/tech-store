@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function OrderDetails({ orderId, onClose }) {
@@ -8,11 +8,14 @@ export default function OrderDetails({ orderId, onClose }) {
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/orderdetails/all/${orderId}`, {
-          headers: {
-            Accept: "application/vnd.api+json",
-          },
-        });
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/orderdetails/all/${orderId}`,
+          {
+            headers: {
+              Accept: "application/vnd.api+json",
+            },
+          }
+        );
         setOrderDetails(response.data.order);
       } catch (error) {
         console.error("Error fetching order details:", error);
@@ -41,7 +44,9 @@ export default function OrderDetails({ orderId, onClose }) {
       <p className="mb-2">Order ID: {orderDetails.id}</p>
       <p className="mb-2">Order Date: {orderDetails.order_date}</p>
       <p className="mb-2">Delivery Address: {orderDetails.delivery_address}</p>
-      <p className="mb-2">Total Price for Order: {orderDetails.total_price_for_order}</p>
+      <p className="mb-2">
+        Total Price for Order: {orderDetails.total_price_for_order}
+      </p>
       <h3 className="font-semibold mb-2">Products:</h3>
       <table className="min-w-full bg-white">
         <thead>
@@ -65,11 +70,12 @@ export default function OrderDetails({ orderId, onClose }) {
           ))}
         </tbody>
       </table>
-      <button className="bg-gray-500 text-white py-2 px-4 rounded mt-4" onClick={onClose}>
+      <button
+        className="bg-gray-500 text-white py-2 px-4 rounded mt-4"
+        onClick={onClose}
+      >
         Close Details
       </button>
     </div>
   );
 }
-
-

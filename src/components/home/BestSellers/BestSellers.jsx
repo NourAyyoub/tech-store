@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Heading from "../Products/Heading";
 import Product from "../Products/Product";
@@ -35,7 +35,6 @@ export default function BestSellers() {
               price={product.price.toFixed(2)}
               description={product.description}
               remaining_quantity={product.remaining_quantity}
-              
             />
           ))
         )}

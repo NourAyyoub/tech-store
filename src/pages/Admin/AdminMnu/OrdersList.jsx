@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function OrdersList() {
@@ -212,7 +212,7 @@ export default function OrdersList() {
         />
         <input
           type="text"
-          placeholder="Filter by Customer ID" // New input field for customer_id
+          placeholder="Filter by Customer ID"
           value={searchCustomerId}
           onChange={(e) => setSearchCustomerId(e.target.value)}
           className="mb-2 md:mb-0 px-4 py-2 border rounded"

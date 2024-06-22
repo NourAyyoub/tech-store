@@ -41,7 +41,7 @@ export default function Header() {
               },
             }
           );
-          setUserRole(response.data.user.status); // Update userRole with status
+          setUserRole(response.data.user.status);
         } catch (error) {
           console.error("Error fetching user role:", error);
         }
@@ -56,7 +56,7 @@ export default function Header() {
   );
 
   return (
-    <div className="w-full h-20 bg-[#F5F5F3] sticky top-0 z-50 border-b border-gray-200 shadow-md">
+    <div className="w-full h-20 bg-[#bebebc] sticky top-0 z-50 border-b border-gray-200 shadow-md">
       <nav className="h-full px-4 max-w-container mx-auto relative">
         <Flex className="flex items-center justify-between h-full">
           <Link to="/">
