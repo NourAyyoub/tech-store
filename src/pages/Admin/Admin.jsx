@@ -5,6 +5,7 @@ import EditProductForm from "./AdminMnu/EditProductForm";
 import OrdersList from "./AdminMnu/OrdersList";
 import DeleteProductForm from "./AdminMnu/DeleteProductForm";
 import UsersList from "./AdminMnu/UsersList";
+import AiPrediction from "./AdminMnu/AiPrediction";
 
 export default function Admin() {
   const [currentForm, setCurrentForm] = useState("viewOrders");
@@ -23,6 +24,7 @@ export default function Admin() {
         {currentForm === "editProduct" && <EditProductForm />}
         {currentForm === "deleteProduct" && <DeleteProductForm />}
         {currentForm === "viewUsers" && <UsersList />}{" "}
+        {currentForm === "AiPrediction" && <AiPrediction />}
       </div>
     </div>
   );

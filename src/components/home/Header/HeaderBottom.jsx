@@ -164,7 +164,7 @@ export default function HeaderBottom() {
             )}
             <Link to="/cart">
               <div className="relative">
-                <FaShoppingCart className="w-5 h-5 hover:text-green-600 text-primeColor transition-colors duration-300" />
+                <FaShoppingCart className="w-5 h-5 hover:text-blue-600 text-primeColor transition-colors duration-300" />
               </div>
             </Link>
             <div onClick={handleFavoritesClick}>
