@@ -99,7 +99,7 @@ export default function SignUp() {
         .then((response) => {
           if (response.data.status) {
             setSuccessMsg(
-              `Hello dear ${clientName}, Welcome to the Shop Admin panel. We received your Sign up request. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${email}`
+              `Hello dear ${clientName}, welcome to the store. Your account has been created successfully`
             );
             setClientName("");
             setEmail("");
