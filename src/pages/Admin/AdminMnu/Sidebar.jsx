@@ -5,6 +5,7 @@ export default function Sidebar({ currentForm, onShowForm }) {
     { name: "editProduct", label: "Edit Product" },
     { name: "deleteProduct", label: "Delete Product" },
     { name: "viewUsers", label: "View Users" },
+    { name: "AiPrediction", label: "Ai Prediction" },
   ];
 
   return (
