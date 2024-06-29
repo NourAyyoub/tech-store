@@ -81,8 +81,7 @@ export default function Cart() {
 
       for (const item of cart.order_details) {
         await axios.put(
-          `http://127.0.0.1:8000/api/product/updaterequestcount/${item.product.id}`,
-          {},
+          `http://127.0.0.1:8000/api/product/updaterequestcount/increase/${orderId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -92,7 +91,7 @@ export default function Cart() {
         );
 
         await axios.put(
-          `http://127.0.0.1:8000/api/product/updatequantity/decrease/${item.product.id}`,
+          `http://127.0.0.1:8000/api/product/updatequantity/decrease/${orderId}`,
           {},
           {
             headers: {
@@ -209,7 +208,7 @@ export default function Cart() {
                           updateProductQuantity(
                             cart.id,
                             item.product.id,
-                            item.quantity - 1
+                             - 1
                           )
                         }
                         className="py-1 px-3 bg-red-500 text-white font-semibold uppercase hover:bg-red-700 duration-300 mr-2"
@@ -222,7 +221,7 @@ export default function Cart() {
                           updateProductQuantity(
                             cart.id,
                             item.product.id,
-                            item.quantity + 1
+                             1
                           )
                         }
                         className="py-1 px-3 bg-green-500 text-white font-semibold uppercase hover:bg-green-700 duration-300 ml-2"
@@ -262,22 +261,10 @@ export default function Cart() {
                     Cart totals
                   </h1>
                   <div>
-                    <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
+                    <p className="flex items-center justify-between border-[1px] border-gray-400 py-1.5 text-lg px-4 font-medium">
                       Subtotal
                       <span className="font-semibold tracking-wide font-titleFont">
                         ₪{totalAmt.toFixed(2)}
-                      </span>
-                    </p>
-                    <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
-                      Shipping Charge
-                      <span className="font-semibold tracking-wide font-titleFont">
-                        ₪{shippingCharge.toFixed(2)}
-                      </span>
-                    </p>
-                    <p className="flex items-center justify-between border-[1px] border-gray-400 py-1.5 text-lg px-4 font-medium">
-                      Total
-                      <span className="font-bold tracking-wide text-lg font-titleFont">
-                        ₪{(totalAmt + shippingCharge).toFixed(2)}
                       </span>
                     </p>
                   </div>
