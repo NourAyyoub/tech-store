@@ -137,7 +137,6 @@ export default function AiPrediction() {
         count: number,
       });
 
-      console.log("Response from API:", response.data);
 
       const predictions = response.data.data[0];
       const dates = Object.keys(predictions);

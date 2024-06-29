@@ -48,13 +48,11 @@ export default function SignIn() {
             },
           }
         );
-        console.log(response);
 
         if (response.status === 200) {
           const { user, token } = response.data;
           localStorage.setItem("token", token);
           localStorage.setItem("user", JSON.stringify(user));
-          console.log(response.data.user[0].status);
           if (response.data.user[0].status === "customer") navigate("/");
           else {
             navigate("/admin");
