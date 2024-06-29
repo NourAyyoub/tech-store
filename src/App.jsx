@@ -24,10 +24,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Layout() {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Header />
       <HeaderBottom />
-      <Outlet />
+      <div className="flex-grow">
+        <Outlet />
+      </div>
       <Footer />
     </div>
   );
