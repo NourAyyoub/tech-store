@@ -119,6 +119,7 @@ export default function ProductInfo({ productInfo }) {
       <h2 className="text-4xl font-semibold">{productInfo.name}</h2>
       <p className="text-2xl font-semibold">{productInfo.price}₪</p>
       <hr />
+      <p className="text-base text-gray-600">Product ID : {productInfo.id}</p>
       <p className="text-base text-gray-600">
         description : {renderDescription()}
       </p>
