@@ -34,7 +34,12 @@ export default function AiPrediction() {
         },
       },
       title: {
-        show: false,
+        text: "Sales forecast chart",
+        align: "center",
+        style: {
+          fontSize: "16px",
+          fontWeight: "bold",
+        },
       },
       dataLabels: {
         enabled: false,
@@ -63,6 +68,15 @@ export default function AiPrediction() {
           },
         },
         categories: [],
+        title: {
+          text: "Data",
+          style: {
+            color: "#616161",
+            fontSize: "14px",
+            fontFamily: "inherit",
+            fontWeight: 500,
+          },
+        },
       },
       yaxis: {
         labels: {
@@ -71,6 +85,15 @@ export default function AiPrediction() {
             fontSize: "12px",
             fontFamily: "inherit",
             fontWeight: 400,
+          },
+        },
+        title: {
+          text: "Sales",
+          style: {
+            color: "#616161",
+            fontSize: "14px",
+            fontFamily: "inherit",
+            fontWeight: 500,
           },
         },
       },
@@ -136,7 +159,6 @@ export default function AiPrediction() {
         unit: option,
         count: number,
       });
-
 
       const predictions = response.data.data[0];
       const dates = Object.keys(predictions);
@@ -204,12 +226,11 @@ export default function AiPrediction() {
                 <li>
                   <strong>Entering the Start Date:</strong>
                   <p>
-                    Use the date input field to select the start date from
-                    which you want to begin the forecasts. You can click on
-                    the date field and choose the appropriate date from the
-                    popup calendar. Example: If you want to start the
-                    forecasts from January 1, 2024, select this date from the
-                    calendar.
+                    Use the date input field to select the start date from which
+                    you want to begin the forecasts. You can click on the date
+                    field and choose the appropriate date from the popup
+                    calendar. Example: If you want to start the forecasts from
+                    January 1, 2024, select this date from the calendar.
                   </p>
                 </li>
                 <li>
@@ -235,13 +256,13 @@ export default function AiPrediction() {
                 <li>
                   <strong>Forecast:</strong>
                   <p>
-                    After filling in all the fields, click the "Forecast"
-                    button to start the forecasts based on the entered data.
-                    The chart will update to reflect the new forecasts based on
-                    the time period you specified. Example: If you entered
-                    January 1, 2024, as the start date, selected "Month" as the
-                    time unit, and entered 2 as the number of units, sales
-                    forecasts for January and February 2024 will be generated.
+                    After filling in all the fields, click the "Forecast" button
+                    to start the forecasts based on the entered data. The chart
+                    will update to reflect the new forecasts based on the time
+                    period you specified. Example: If you entered January 1,
+                    2024, as the start date, selected "Month" as the time unit,
+                    and entered 2 as the number of units, sales forecasts for
+                    January and February 2024 will be generated.
                   </p>
                 </li>
               </ol>
@@ -267,7 +288,9 @@ export default function AiPrediction() {
                 } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
               />
               {errors.date && (
-                <p className="text-red-500 text-xs mt-1">Please select a date</p>
+                <p className="text-red-500 text-xs mt-1">
+                  Please select a date
+                </p>
               )}
             </div>
 
@@ -293,7 +316,9 @@ export default function AiPrediction() {
                 <option value="year">Year</option>
               </select>
               {errors.option && (
-                <p className="text-red-500 text-xs mt-1">Please select an option</p>
+                <p className="text-red-500 text-xs mt-1">
+                  Please select an option
+                </p>
               )}
             </div>
 
@@ -315,7 +340,9 @@ export default function AiPrediction() {
                 } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
               />
               {errors.number && (
-                <p className="text-red-500 text-xs mt-1">Please enter a valid number</p>
+                <p className="text-red-500 text-xs mt-1">
+                  Please enter a valid number
+                </p>
               )}
             </div>
           </div>
